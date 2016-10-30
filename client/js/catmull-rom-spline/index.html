@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="catmull-rom-spline.js"></script>
+		<script type="text/javascript">
+		function test_catmull_spline() {
+			// set up the test canvas
+			var canvas = document.getElementById("canvas"),
+				ctx = canvas.getContext("2d"),
+				i = 7,
+				vertices = new Array(i),
+				x, y;
+			
+			// create a bunch of random points in a circle
+			while(i) {
+				do {
+					x = Math.random() - 0.5;
+					y = Math.random() - 0.5;
+				} while(x * x + y * y > 0.25);
+				
+				x = (x * 0.96875 + 0.5) * canvas.width;
+				y = (y * 0.96875 + 0.5) * canvas.height;
+				
+				vertices[--i] = {"X": x, "Y": y};
+			}
+					
+			// log what we are working with
+			window.vertices = vertices;
+			console.log("vertices:");
+			console.log(vertices);
+			
+			// start timing
+			console.time("spline");
+			
+			// find the spline points
+			var spline_vertices = catmull_rom_spline().interpolate(vertices, 10, "centripetal");
+			console.timeEnd("spline");
+			
+			console.log(spline_vertices);
+			
+			// now draw the spline
+			ctx.strokeStyle = "#000";
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			ctx.moveTo(spline_vertices[0].X, spline_vertices[0].Y);
+			for (var i=0; i<spline_vertices.length; i++) {
+				ctx.lineTo(spline_vertices[i].X, spline_vertices[i].Y);
+			}
+			ctx.moveTo(spline_vertices[0].X, spline_vertices[0].Y);
+			ctx.closePath();
+			ctx.stroke();
+			
+			// draw the points as circles
+			ctx.strokeStyle = "#f00";
+			for (var i=0; i<vertices.length; i++) {
+				ctx.beginPath();
+				ctx.arc(vertices[i].X, vertices[i].Y, 5, 0, Math.PI * 2, false);
+				ctx.closePath();
+				ctx.stroke();
+			}
+		}
+		</script>
+	</head>
+
+	<body onload="test_catmull_spline();">
+		<canvas id="canvas" width="800" height="800" style="margin-left: auto; margin-right: auto; display: block;"></canvas>
+	</body>
+</html>

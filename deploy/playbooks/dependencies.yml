@@ -1,0 +1,32 @@
+---
+- hosts: all
+  user: dna
+  become: yes
+  become_user: root
+  tasks:
+    - name: Install Debian Packages
+      apt: update_cache=true pkg={{item}} state=installed
+      with_items:
+       - build-essential
+       - cmake
+       - git
+       - curl
+       - python-pip
+       - python-virtualenv
+       - python-dev
+       - postgresql
+       - postgresql-server-dev-all
+       - libboost-dev
+       - libboost-program-options-dev
+       - libboost-thread-dev
+       - libboost-system-dev
+       - libboost-iostreams-dev
+       - libboost-filesystem-dev
+       - libboost-math-dev
+       - libboost-python-dev
+       - libboost-signals-dev
+       - libboost-date-time-dev
+       - uwsgi
+       - uwsgi-extra
+       - uwsgi-plugin-python
+

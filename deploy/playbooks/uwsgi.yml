@@ -1,0 +1,21 @@
+---
+- hosts: all
+  user: dna
+  become: yes
+  become_user: root
+  tasks:
+    - name: Start uwsgi
+      service: name=uwsgi state=started
+    
+    - name: Install UWSGI Config
+      template: src=../config/psutool-uwsgi.ini dest=/etc/uwsgi/apps-available/psutool-uwsgi.ini
+      register: copied
+    
+    - name: Create uwsgi symlink to enable config
+      file: src=/etc/uwsgi/apps-available/psutool-uwsgi.ini dest=/etc/uwsgi/apps-enabled/psutool-uwsgi.ini state=link
+      register: symlinked
+    
+    - name: Bounce uwsgi
+      service: name=uwsgi state=restarted
+      when: copied|changed or symlinked|changed
+

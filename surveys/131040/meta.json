@@ -1,0 +1,365 @@
+{
+  "p": [
+    {
+      "code": "BMNP#REMOTE", 
+      "marker_slope": 94.22527777777778, 
+      "point_id": 1, 
+      "marker_angle": 207.85083333333333, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 6.124
+    }, 
+    {
+      "code": "DH+BMNC", 
+      "marker_slope": 91.76166666666667, 
+      "point_id": 2, 
+      "marker_angle": 207.81, 
+      "pole_height": 1.7, 
+      "station_id": 0, 
+      "marker_distance": 6.11
+    }, 
+    {
+      "code": "KB-1", 
+      "marker_slope": 93.50944444444444, 
+      "point_id": 3, 
+      "marker_angle": 218.61194444444445, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 7.187
+    }, 
+    {
+      "code": "KO", 
+      "marker_slope": 94.45472222222223, 
+      "point_id": 4, 
+      "marker_angle": 202.04749999999999, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 5.883
+    }, 
+    {
+      "code": "KB-1", 
+      "marker_slope": 95.02083333333333, 
+      "point_id": 5, 
+      "marker_angle": 163.60027777777776, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 5.401
+    }, 
+    {
+      "code": "SU", 
+      "marker_slope": 94.23305555555555, 
+      "point_id": 9, 
+      "marker_angle": 123.06805555555555, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 7.319
+    }, 
+    {
+      "code": "KB-1", 
+      "marker_slope": 92.79194444444444, 
+      "point_id": 10, 
+      "marker_angle": 116.06861111111111, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 10.627
+    }, 
+    {
+      "code": "KB-1", 
+      "marker_slope": 92.09638888888888, 
+      "point_id": 11, 
+      "marker_angle": 106.84027777777777, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 14.825
+    }, 
+    {
+      "code": "KO", 
+      "marker_slope": 92.09638888888888, 
+      "point_id": 11, 
+      "marker_angle": 106.84027777777777, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 14.825
+    }, 
+    {
+      "code": "LP", 
+      "marker_slope": 92.39666666666668, 
+      "point_id": 12, 
+      "marker_angle": 104.05361111111111, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 13.808
+    }, 
+    {
+      "code": "BB-4", 
+      "marker_slope": 91.61638888888888, 
+      "point_id": 14, 
+      "marker_angle": 89.74083333333333, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 14.257
+    }, 
+    {
+      "code": "PG", 
+      "marker_slope": 91.92583333333334, 
+      "point_id": 15, 
+      "marker_angle": 89.7025, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 13.065
+    }, 
+    {
+      "code": "BB-4", 
+      "marker_slope": 93.25166666666667, 
+      "point_id": 16, 
+      "marker_angle": 90.66277777777778, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 5.955
+    }, 
+    {
+      "code": "CLDW-3", 
+      "marker_slope": 93.94333333333334, 
+      "point_id": 17, 
+      "marker_angle": 112.81555555555555, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 6.197
+    }, 
+    {
+      "code": "CLDW-3", 
+      "marker_slope": 93.71361111111112, 
+      "point_id": 18, 
+      "marker_angle": 236.1336111111111, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 5.705
+    }, 
+    {
+      "code": "TCPT", 
+      "marker_slope": 94.2275, 
+      "point_id": 19, 
+      "marker_angle": 246.3477777777778, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 4.564
+    }, 
+    {
+      "code": "UB", 
+      "marker_slope": 97.17888888888889, 
+      "point_id": 20, 
+      "marker_angle": 245.0602777777778, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 3.502
+    }, 
+    {
+      "code": "PG", 
+      "marker_slope": 97.26916666666666, 
+      "point_id": 21, 
+      "marker_angle": 251.26833333333335, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 3.383
+    }, 
+    {
+      "code": "BB-4", 
+      "marker_slope": 94.84055555555555, 
+      "point_id": 22, 
+      "marker_angle": 255.1275, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 4.697
+    }, 
+    {
+      "code": "SM", 
+      "marker_slope": 90.59138888888889, 
+      "point_id": 23, 
+      "marker_angle": 274.5475, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 4.849
+    }, 
+    {
+      "code": "TB-5", 
+      "marker_slope": 85.43277777777779, 
+      "point_id": 24, 
+      "marker_angle": 306.6933333333333, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 8.663
+    }, 
+    {
+      "code": "TB-5", 
+      "marker_slope": 85.08722222222222, 
+      "point_id": 25, 
+      "marker_angle": 37.61805555555556, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 7.841
+    }, 
+    {
+      "code": "TB-5", 
+      "marker_slope": 87.32333333333332, 
+      "point_id": 26, 
+      "marker_angle": 64.06444444444445, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 16.198
+    }, 
+    {
+      "code": "NS", 
+      "marker_slope": 87.53388888888888, 
+      "point_id": 27, 
+      "marker_angle": 37.32694444444445, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 23.787
+    }, 
+    {
+      "code": "NS", 
+      "marker_slope": 87.1763888888889, 
+      "point_id": 28, 
+      "marker_angle": 10.988333333333333, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 17.681
+    }, 
+    {
+      "code": "NS", 
+      "marker_slope": 86.94500000000001, 
+      "point_id": 29, 
+      "marker_angle": 336.3458333333333, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 17.527
+    }, 
+    {
+      "code": "NS", 
+      "marker_slope": 87.7625, 
+      "point_id": 30, 
+      "marker_angle": 344.18194444444447, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 28.015
+    }, 
+    {
+      "code": "NS", 
+      "marker_slope": 87.84805555555555, 
+      "point_id": 31, 
+      "marker_angle": 6.164722222222222, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 27.265
+    }, 
+    {
+      "code": "NS", 
+      "marker_slope": 87.68305555555555, 
+      "point_id": 32, 
+      "marker_angle": 25.62666666666667, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 29.496
+    }, 
+    {
+      "code": "RWBT-6", 
+      "marker_slope": 88.10777777777777, 
+      "point_id": 33, 
+      "marker_angle": 16.261944444444445, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 41.556
+    }, 
+    {
+      "code": "RWBT-6", 
+      "marker_slope": 88.16277777777778, 
+      "point_id": 34, 
+      "marker_angle": 3.842777777777778, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 39.415
+    }, 
+    {
+      "code": "RWBT-6", 
+      "marker_slope": 88.24361111111111, 
+      "point_id": 35, 
+      "marker_angle": 350.195, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 39.281
+    }, 
+    {
+      "code": "RWTO-7", 
+      "marker_slope": 85.93444444444445, 
+      "point_id": 36, 
+      "marker_angle": 350.2755555555555, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 40.132
+    }, 
+    {
+      "code": "PG", 
+      "marker_slope": 85.77027777777778, 
+      "point_id": 37, 
+      "marker_angle": 351.72027777777777, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 40.27
+    }, 
+    {
+      "code": "RWTO-7", 
+      "marker_slope": 85.80111111111111, 
+      "point_id": 38, 
+      "marker_angle": 3.0355555555555553, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 40.226
+    }, 
+    {
+      "code": "RWTO-7", 
+      "marker_slope": 85.71000000000001, 
+      "point_id": 39, 
+      "marker_angle": 14.62861111111111, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 42.299
+    }, 
+    {
+      "code": "PG", 
+      "marker_slope": 85.75166666666667, 
+      "point_id": 40, 
+      "marker_angle": 14.340277777777779, 
+      "pole_height": 1.44, 
+      "station_id": 0, 
+      "marker_distance": 42.22
+    }
+  ], 
+  "s": [
+    {
+      "y": 500, 
+      "x": 500, 
+      "description": "", 
+      "station_id": "1", 
+      "height": 20.291
+    }
+  ], 
+  "u": [
+    {
+      "unknown_6": 1, 
+      "unknown_4": 0, 
+      "unknown_5": 4, 
+      "unknown_2": "", 
+      "unknown_3": 1, 
+      "unknown_1": 5, 
+      "finish_time": 12.140003, 
+      "start_time": 12.020054, 
+      "station_id": "1", 
+      "line_id": 0, 
+      "date": 16.102012, 
+      "station_height": 1.6, 
+      "staff_initials": "LK", 
+      "last_first_point_id": 40
+    }
+  ], 
+  "filename": "131040"
+}

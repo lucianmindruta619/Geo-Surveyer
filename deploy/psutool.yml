@@ -1,0 +1,5 @@
+---
+- include: playbooks/dependencies.yml
+- include: playbooks/application.yml
+- include: playbooks/uwsgi.yml
+- include: playbooks/nginx.yml

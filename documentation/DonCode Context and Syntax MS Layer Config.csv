@@ -1,0 +1,65 @@
+MS Level/Layer,Description,Line Weight,Col,Line Style,FT,TX
+,,,,,,
+1,Shot Height,0,2,,,0.4
+2,Shot,0,2,0,,
+3,Non Coutour HT (Non Plot),0,2,,61,0.4
+4,Non Contour Shot (Non Plot),0,2,0,,
+5,Shot Code (Non Plot),0,3,,61,0.4
+6,Shot Number,0,12,,61,0.4
+7,,,,,,
+8,,,,,,
+9,,,,,,
+10,,,,,,
+11,Title Block,,,,,
+12,,,,,,
+13,,,,,,
+14,Non Plot Levels,0,2,0,,
+15,Conc Slab and Formwork,1,0,,,
+16,Eave and Gutters,1,0,,,
+17,Idents,1,4,,1,
+18,Shrub (TR),1,4,0,,
+19,Eastment Description,0,6,,61,0.8
+20,House,0,4,0,,
+21,House Offsets,0,4,2,,
+22,House Description,0,4,,61,0.4
+23,House Offsets,0,4,,61,0.3
+24,Easement Symbol,0,6,,61,0.5
+25,Road Names,3,6,,61,1.2
+26,Traverse,0,7,4,,
+27,Distances,1,6,,61,0.67
+28,Area,1,6,,61,0.8
+29,Lot No,3,6,,61,1.3
+30,Cadastral Infromation,3,6,,,
+31,Bearings,0,6,0,61,0.5
+32,Location Plan,,,,,
+33,,,,,,
+34,Inverts or Obverts,0,6,0,,
+35,"STN's, RM's, DHW",,,,,
+36,Tree Code,0,2,0,,
+37,"Foot Paths, Conc Paving, D'Ways",,,,,
+38,Change Grade,,0,3,,
+39,Adjoining Buildings,0,3,0,,
+40,Buildings to be Removed,0,7,0,61,
+41,Services,,2,,61,0.4
+42,Fences,1,2,0,61,0.4
+43,Smoothed Countours,,2,3,61,0.7
+44,"Tracks, Paths",0,4,2,1,0.4
+45,Banks,0,3,3,,
+46,Natural Vegetation,0,2,0,61,0.4
+47,"Roads, Kerbs",,5,,61,0.4
+48,Symbols,,3,0,,
+49,Water Features,0,1,3,61,0.4
+50,Misc Notes,1,5,3,1,
+51,Survey Control,,,,61,
+52,Water,,100,,,
+53,Telstra/Optus,,1,,,
+54,Sewer,,11,,,
+55,Electricity,,4,,,
+56,Stormwater,,103,,,
+57,gas,,3,,,
+58,,,,,,
+59,,,,,,
+60,Tim Contours,,,,,
+61,Contour Values,,,,,
+62,,,,,,
+63,Always Vacant,,,,,

@@ -1,0 +1,261 @@
+AL     AL       A Aluminium   | The first column represents the field code and
+AM     AM       N Amenities   | the second column is the Microstation code. By
+AN     AN       P Angle       | changing the second column, the code used can
+AR     AR       P Arc         | be altered eg. this could fix an incorrect
+AV     AV       N Air Valve   | field code.
+BA     BA       N Bank        | CAUTION: The position of the columns must not
+BB     BB       N Bot Bank    | be changed nor the actual code in the first
+BC     BC       N Box Culvert | column.
+BG     BG       N Building    | The third column indicates the type of code
+BH     BH       N Bore Hole   | (eg. N = noun, A = adjective etc) and is used
+BI     BI       N Bridge      | by the processing software.
+BK     BK       A Brick       | The fourth column is a comment only and is not
+BM     BM       N BM          | used by the processing software.
+BN     BN       P Beginning
+BO     BO       P Bottom
+BS     BS       N Bench Seat
+BT     BT       A Bitumen
+BU     BU       N Bush
+BY     BY       N Boundary
+CA     CA       P Corner "A "
+CB     CB       P Corner "B"
+CC     CC       P Corner "C"
+CD     CD       P Corner "D"
+CG     CG       N Change Grade
+CK     CK       N Creek
+CL     CL       P Centreline
+CM     CM       N Classroom
+CN     CN       N Canal
+CO     CO       A concrete
+CP     CP       N Covered Path
+CR     CR       N Creek
+CV     CV       P Curve
+DD     DD       N Dish Drain
+DH     DH       N Drill Hole
+DR     DR       N Drain
+DV     DV       N Double Air Valve
+EB     EB       N Edge Bitumen
+EC     EC       N Edge Concrete
+ED     ED       P Edge
+EL     EL       A Electrical
+ELME   ELME     N Electricity Meter
+ELPT   ELPT     N Electricity Pit
+EM     EM       N Electricity Main
+EN     EN       P End
+EP     EP       N Electricity Pole
+FC     FC       N Fence
+FI     FI       A Fibro
+FL     FL       N Floor Level
+GA     GA       N Garden
+GB     GB       N Garbage Bin
+GC     GC       N Gatic
+GD     GD       N Guard Rail
+GI     GI       A Galvanised Iron
+GL     GL       N Guard Rail
+GM     GM       N Gas Main
+GP     GP       N Gully Pit
+GR     GR       N Grate
+GS     GS       A Gas
+GSME   GSME     N Gas Meter
+GSPT   GSPT     N Gas Pit
+GT     GT       N Gate
+GU     GU       N Gully
+GV     GV       A Gravel
+HI     HI       P High
+HS     HS       N House
+HW     HW       N Headwall
+HY     HY       N Hydrant
+IN     IN       P Invert
+IS     IS       N Traffic Island
+IT     IT       P Intersection
+KB     KB       N Kerb
+LA     LA       N Lawn
+LC     LC       P Line Closure
+LH     LH       N Lamphole
+LN     LN       P Line of
+LO     LO       P Low
+LP     LP       N Light Pole
+LT     LT       N Traffic Lights
+ME     ME       N Meter
+MF     MF       N Mesh Fence
+MH     MH       N Manhole
+MK     MK       N Mark (survey)
+MT     MT       A Metal
+NC     NC       V No Contour
+NL     NL       V No Level
+NP     NP       V No Plot
+NS     NS       N Natural Surface
+OB     OB       P Obvert
+OC     OC       N Office
+OF     OF       P Offset
+OH     OH       A Overhead
+OL     OL       P On line
+PA     PA       N Path
+PC     PC       N Pedestrian Crossing
+PE     PE       N Play Equipment
+PF     PF       N Paling Fence
+PG     PG       N Peg
+PI     PI       N Pipe
+PL     PL       N Parking Lot
+PM     PM       N Permanent Mark
+PO     PO       N Pole
+PS     PS       N Pump Station
+PT     PT       N Pit
+RC     RC       P Rectangular closure
+RD     RD       N Road
+RF     RF       N Rail Fence
+RI     RI       N Rising Main
+RK     RK       A Rock
+RM     RM       N Reference Mark
+RN     RN       A Rendered
+RO     RO       N Rock Outcrop
+RP     RP       N Ramp
+RT     RT       N Rail Track
+RV     RV       N Reservoir
+RW     RW       N Retaining Wall
+SA     SA       A Sand
+SB     SB       N Slab
+SC     SC       N Scour Valve
+SE     SE       A Sewer
+SEVT   SEVT     N Sewer Vent
+SH     SH       N Shed
+SI     SI       N Sign
+SJ     SJ       N Service Junction
+SL     SL       N Sewer Line
+SM     SM       N Sewer Manhole
+SN     SN       A Stone
+SR     SR       N Stair
+SS     SS       N State Survey Mark
+ST     ST       N Station
+SU     SU       N Shrub
+SV     SV       N Stop Valve
+SW     SW       A Stormwater
+SWMH   SWMH     N Stormwater Manhole
+SWPT   SWPT     N Stormwater Pit
+TA     TA       N Tap
+TB     TB       N Top Bank
+TC     TC       A Telecom
+TCPT   TCPT     N Telecom Pit
+TD     TD       N Table Drain
+TF     TF       N Transformer
+TI     TI       A Timber
+TK     TK       N Track
+TL     TL       N Telecom Line
+TM     TM       N Tie Mark
+TN     TN       N Tank
+TO     TO       P Top
+TP     TP       P Tangent Point
+TR     TR       N Tree
+UB     UB       N Underground Electricity Box
+UC     UC       N Unknown Code
+UN     UN       N Undefined Noun
+UG     UG       P Underground
+VC     VC       N Vehicular Crossing
+VT     VT       N Vent
+WA     WA       N Wall
+WC     WC       N Watercourse
+WF     WF       N Wire Fence
+WL     WL       N Water Level
+WM     WM       N Water Main
+WR     WR       A Water
+WRME   WRME     N Water Meter
+00     00       N User definable 00-99. Cells can be created and placed
+01     01       N automatically in Microstation if required. See comments
+02     02       N at top of this file also.
+03     03       N
+04     04       N
+05     05       N
+06     06       N
+07     07       N
+08     08       N
+09     09       N
+10     10       N
+11     11       N
+12     12       N
+13     13       N
+14     14       N
+15     15       N
+16     16       N
+17     17       N
+18     18       N
+19     19       N
+20     20       N
+21     21       N
+22     22       N
+23     23       N
+24     24       N
+25     25       N
+26     26       N
+27     27       N
+28     28       N
+29     29       N
+30     30       N
+31     31       N
+32     32       N
+33     33       N
+34     34       N
+35     35       N
+36     36       N
+37     37       N
+38     38       N
+39     39       N
+40     40       N
+41     41       N
+42     42       N
+43     43       N
+44     44       N
+45     45       N
+46     46       N
+47     47       N
+48     48       N
+49     49       N
+50     50       N
+51     51       N
+52     52       N
+53     53       N
+54     54       N
+55     55       N
+56     56       N
+57     57       N
+58     58       N
+59     59       N
+60     60       N
+61     61       N
+62     62       N
+63     63       N
+64     64       N
+65     65       N
+66     66       N
+67     67       N
+68     68       N
+69     69       N
+70     70       N
+71     71       N
+72     72       N
+73     73       N
+74     74       N
+75     75       N
+76     76       N
+77     77       N
+78     78       N
+79     79       N
+80     80       N
+81     81       N
+82     82       N
+83     83       N
+84     84       N
+85     85       N
+86     86       N
+87     87       N
+88     88       N
+89     89       N
+90     90       N
+91     91       N
+92     92       N
+93     93       N
+94     94       N
+95     95       N
+96     96       N
+97     97       N
+98     98       N
+99     99       N

@@ -1,0 +1,31 @@
+{
+  "p": [], 
+  "s": [
+    {
+      "y": 500, 
+      "x": 500, 
+      "station_name": "1", 
+      "description": "", 
+      "height": 20.0
+    }
+  ], 
+  "u": [
+    {
+      "unknown_6": 1, 
+      "unknown_4": 0, 
+      "unknown_5": 4, 
+      "user_id": 0, 
+      "unknown_3": 1, 
+      "unknown_1": 5, 
+      "finish_time": 12.000001,
+      "start_time": 12.000001,
+      "station_height": 1.0, 
+      "date": 12.000001, 
+      "unknown_2": "", 
+      "station_name": "None", 
+      "staff_initials": "None", 
+      "last_first_point_id": 0
+    }
+  ], 
+  "filename": "None"
+}

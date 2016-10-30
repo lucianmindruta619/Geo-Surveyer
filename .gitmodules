@@ -1,0 +1,34 @@
+[submodule "client/js/lib/three.js"]
+	path = client/js/lib/three.js
+	url = https://github.com/mrdoob/three.js.git
+[submodule "client/js/lib/threex"]
+	path = client/js/lib/threex
+	url = https://github.com/jeromeetienne/threex.git
+[submodule "client/js/lib/mustache"]
+	path = client/js/lib/mustache
+	url = https://github.com/janl/mustache.js.git
+[submodule "client/js/lib/jquery-file-uploader"]
+	path = client/js/lib/jquery-file-uploader
+	url = https://github.com/blueimp/jQuery-File-Upload.git
+[submodule "client/js/lib/delaunay"]
+	path = client/js/lib/delaunay
+	url = https://github.com/chr15m/delaunay.git
+[submodule "client/js/lib/parallel.js"]
+	path = client/js/lib/parallel.js
+	url = https://github.com/adambom/parallel.js.git
+[submodule "client/js/lib/sticky"]
+	path = client/js/lib/sticky
+	url = https://github.com/garand/sticky.git
+[submodule "client/js/lib/potree"]
+	path = client/js/lib/potree
+	url = git@github.com:donovan-associates/potree.git
+	# url = https://github.com/donovan-associates/potree.git
+	# url = git@bitbucket.org:mccormickit/potree.git
+[submodule "PotreeConverter"]
+	path = PotreeConverter
+	url = https://github.com/potree/PotreeConverter.git
+	ignore = dirty
+[submodule "libLAS"]
+	path = libLAS
+	url = https://github.com/libLAS/libLAS.git
+	ignore = dirty

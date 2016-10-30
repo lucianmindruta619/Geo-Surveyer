@@ -1,0 +1,691 @@
+;--------------------------------- SMOOTH.UCM ----------------------------------
+;
+;User command to smooth contour linestrings.
+;
+;Microstation Version 3.0.0
+;
+;R. Casagrande 27/11/90  (A.E.R. Technical Services Pty. Ltd. 625-5014)
+;Changes to defaults by I. Dewey 12/11/91
+;
+;KD added level change for text to suit ver 5 ---24.8.95
+;Removed keyin options
+;(Reinstated keyin options as SMOOTH1.UCM)
+;-------------------------------------------------------------- Version 1.0 ---
+        SET CONTRL=CONTRL ! 256
+        KEY  'NOECHO'
+        MSG  'STSMOOTH CONTOUR UCM     - Ver 2.0a -'
+
+        ;KD_----------------------
+        SET R7=2
+        SET R13=0.5*1000
+        SET R9=60
+        SET R8=43
+        GO SET      ;bypass all entries!
+        ;----------------------------------
+
+
+METHOD: MSG  'PRMethod 1 or 2  (Data/Return=1)'
+        MSG  'ERReset to Exit'
+        GET  K,TYPE,P,TYPE1,R,EXITU
+
+TYPE1:  SET  KEY=1
+
+TYPE:   TST  KEY EQ '',TYPE1
+        SET  R7=KEY
+        TST  R7 LT 1,METHOD
+        TST  R7 GT 2,METHOD
+
+DIST:   MSG  'PREnter distance  (Data/Return=0.5)'
+        SET  MSG='CFMethod='+KEY
+        MSG  MSG
+        GET  K,KEY,P,DIS,R,EXITU
+
+DIS:    SET  KEY='0.5'
+
+KEY:    TST  KEY EQ '',DIS
+        SET  R13=KEY*1000
+
+LEVEL1: MSG  'PREnter contour level  (Data/Return=60)'
+        SET  MSG=MSG+', Dist='
+        SET  MSG=MSG+KEY
+        MSG  MSG
+        GET  K,KEY1,P,LEV1,R,EXITU
+
+LEV1:   SET  KEY=60
+
+KEY1:   TST  KEY EQ '',LEV1
+        SET  R9=KEY
+;        TST  R9 GT 63,LEVEL1
+;        TST  R9 LT 1,LEVEL1
+        SET  R6=R9+128
+
+LEVEL2: MSG  'PREnter smoothed level (Data/Return=43)'
+        SET  MSG='MSContour Lev='
+        SET  MSG=MSG+R9
+        MSG  MSG
+        GET  K,KEY2,P,LEV2,R,EXITU
+
+LEV2:   SET  KEY=43
+
+KEY2:   TST  KEY EQ '',LEV2
+        SET  R8=KEY
+;        TST  R8 GT 63,LEVEL2
+;        TST  R8 LT 1,LEVEL2
+
+ACCEPT: MSG  'ERData/Return to continue, Reset to Exit'
+        MSG  'PR'
+        SET  MSG=MSG+', Smoothed Lev='
+        SET  MSG=MSG+R8
+        MSG  MSG
+        GET  K,SET,P,SET,R,EXITU
+
+SET:    SET  R0=4
+        SET  R1=0
+
+        SET  R30=DFSECT
+        SET  R31=DFBYTE
+        SET  KEY='LV='+R8
+        KEY
+        MSG  'CFSmoothing Contours....'
+        MSG  'ER'
+
+NEXT:   TST  R0 NE R30,OK                        ; Test for EOF
+        TST  R1 EQ R31,EXITU
+
+OK:     RED  R0,R1
+        TST  UELETY EQ 255,EXITU
+        SET  R2=R0
+        SET  R3=R1
+        SET  R0=ELEBLK
+        SET  R1=ELECNT
+
+PLACE:  TST  UELETY NE 4,NEXT
+        TST  XYZLEV EQ R6,CMPLX                  ; Complex string
+        TST  XYZLEV NE R9,NEXT                   ; If not on contour level skip
+
+CMPLX:  SET  R10=0
+        SET  R19=0
+        SET  R20=0
+        SET  C0='START'
+        SET  C11='0'
+        SET  IDSYMB=SY.DSP                       ; Set symbology
+        CMD  PPTLST
+
+STRG:   RED  R2,R3
+        SET  C15=''
+        SET  R11=LS.NVR*3
+        TST  NDICES EQ 3,STVER
+        SET  R11=LS.NVR*2
+
+STVER:  TST  C0 EQ 'START',VER
+
+        SET  I1=I3
+        SET  I2=I4
+
+NOVER:  SET  I3=I5
+        SET  I4=I6
+        SET  I5=I7
+        SET  I6=I8
+        SET  I11=I7
+        SET  I12=I8
+        SET  R19=2
+        TST  R7 EQ 2,VER
+        SET  R19=3
+
+VER:    SET  R10=R10+1
+        TST  R10 GT R11,END
+        SET  I7=LS.VER(R10)
+        SET  R10=R10+1
+        SET  I8=LS.VER(R10)
+
+        TST  NDICES EQ 2,TSTVER
+        SET  R10=R10+1
+        SET  I0=LS.VER(R10)
+
+TSTVER: TST  R19 EQ 0,SETVER
+        SET  A11=I7-I11
+        SET  A12=I8-I12
+        SET  A11=A11*A11
+        SET  A12=A12*A12
+        SET  A11=A11+A12
+        SQR  A11 A11                             ; Distance
+
+        TST  A11 GT R13,SETVER                   ; Filter points under min dist
+        GO   VER
+
+SETVER: SET  I11=I7
+        SET  I12=I8
+        SET  R19=R19+1
+
+        TST  R19 EQ 1,SETV1
+        TST  R19 EQ 2,SETV2
+        TST  R19 EQ 3,SETV3
+
+        TST  C0 NE 'START',AV3
+
+AV2:    SET  A3=I3+I5
+        SET  I3=A3/2
+        SET  A4=I4+I6
+        SET  I4=A4/2
+
+AV3:    SET  A5=I5+I7
+        SET  I5=A5/2
+        SET  A6=I6+I8
+        SET  I6=A6/2
+        GO   ANGLE
+
+SETV1:  SET  I1=I7
+        SET  I2=I8
+        GO   VER
+
+SETV2:  SET  I3=I7
+        SET  I4=I8
+        GO   VER
+
+SETV3:  SET  I5=I7
+        SET  I6=I8
+        TST  R7 EQ 2,ANGLE
+        GO   VER
+
+SINGLE: TST  R19 GE 3,ANGLE
+        PNT  I1,I2,I0,1
+        PNT  I7,I8,I0,1
+        RST
+        GO   NEXT
+
+END:    TST  C0 EQ 'START',SINGLE
+        SET  I3=I7
+        SET  I4=I8
+        SET  A10=0
+        SET  C0='END'
+
+ANGLE:  SET  I11=I3-I1
+        SET  I12=I4-I2
+        SET  A11=I11*I11
+        SET  A12=I12*I12
+        SET  A11=A11+A12
+        SQR  I13 A11                             ; Distance 1
+        SET  A11=I11/I13
+        SET  A12=I12/I13
+        ATN  A0 A11 A12                          ; Bearing 1
+
+BRG1:   TST  C0 EQ 'END',BRG2
+        SET  I11=I5-I3
+        SET  I12=I6-I4
+        SET  A11=I11*I11
+        SET  A12=I12*I12
+        SET  A11=A11+A12
+        SQR  I10 A11                             ; Distance 2
+        SET  A11=I11/I10
+        SET  A12=I12/I10
+        ATN  A10 A11 A12                         ; Bearing 2
+
+BRG2:   SET  A12=A10-A0
+        SET  A11=A0-C11
+
+        TST  A12 GT 0.1,ANG1                     ; Filter angles less than 0.1
+        TST  A12 LT -0.1,ANG1
+        GO   NOVER
+
+ANG1:   TST  A11 GE -180,ANG2
+        SET  A11=A11+360
+
+ANG2:   TST  A11 LE 180,ANG3
+        SET  A11=A11-360
+
+ANG3:   TST  A12 GE -180,ANG4
+        SET  A12=A12+360
+
+ANG4:   TST  A12 LE 180,TST
+        SET  A12=A12-360
+
+TST:    SET  C5=A11
+        SET  C6=A12
+        SET  C12='1'    
+        TST  C0 EQ 'END',LAST
+        TST  A12 GE 0,POS1
+        SET  C12='-1'
+
+POS1:   TST  C0 EQ 'START',START
+        SET  C0=''
+        TST  A11 LT 0,NEG
+        TST  A12 GE 0,CALC
+        GO   REVCRV
+
+NEG:    TST  A12 GE 0,REVCRV  
+        GO   CALC
+
+REVCRV: SET  C0='REVERSE'
+        GO   CALC
+
+START:  SET  A7=I1
+        SET  A8=I2
+        SET  A11=10                              ; Limit deflection to 10 deg.
+        GO   CALC
+
+LAST:   SET  A7=I3
+        SET  A8=I4
+        SET  I3=I1
+        SET  I4=I2
+        SET  I1=A7
+        SET  I2=A8
+        SET  C6=C5
+        SET  A0=C11
+        TST  A11 GE 0,POS2
+        SET  C12='-1'
+
+POS2:   SET  A11=10                              ; Limit deflection to 10 deg.
+
+CALC:   SET  A10=C6/2
+        TST  A10 GE 0,ADD3
+        SET  A10=-90+A10
+        GO   BRG3
+
+ADD3:   SET  A10=90+A10
+
+BRG3:   SET  A10=A0+A10
+        SET  A11=A11*A11
+        SQR  A11 A11 
+        SET  A12=A12*A12
+        SQR  A12 A12
+
+        TST  A11 LT A12,OKANG                    ; Adopt smaller of two angles
+        SET  A11=A12
+
+OKANG:  SET  A12=A11/2
+        SCS  A12 A13 A12
+        TST  A12 GT 0,OKSIN
+        SET  A12=A12*-1
+        TST  A12 NE 0,OKSIN
+        SET  A12=0.0001
+
+OKSIN:  SET  A9=I13/2                            ; Radius 1
+        SET  A9=A9/A12
+        SET  I9=I13
+        TST  C0 EQ 'END',RAD2
+        TST  I13 LT I10,RAD2                     ; Adopt smaller of two dists
+        SET  I9=I10
+
+RAD2:   SET  I9=I9/4                             ; Radius 2
+
+CALC1:  SCS  A11 A12 A10
+        SET  A11=A11*I9
+        SET  A12=A12*I9
+
+        SET  A1=I3+A11                           ; Calc point 1
+        SET  A2=I4+A12
+
+        TST  C0 EQ 'START',GO1
+        TST  C0 EQ 'END',GO1
+
+        SET  A15=C5/2
+        TST  A15 GE 0,ADD4
+        SET  A15=-90-A15
+        GO   BRG4
+
+ADD4:   SET  A15=90-A15
+
+BRG4:   SET  A15=A0+A15
+
+CALC2:  SCS  A11 A12 A15
+        SET  A11=A11*I9
+        SET  A12=A12*I9
+
+        SET  I10=I1+A11                          ; Calc point 4
+        SET  I15=I2+A12
+
+GO1:    SET  C11=A0
+        TST  C0 EQ '',GO2
+        TST  C0 EQ 'REVERSE',REV
+        SET  I11=A7-A1
+        SET  I12=A8-A2
+        GO   GO2A
+
+GO2:    SET  I11=I10-A1
+        SET  I12=I15-A2
+        SET  A7=I10
+        SET  A8=I15
+        GO   GO2A
+       
+REV:    SET  A7=I10+A1
+        SET  A7=A7/2
+        SET  A8=I15+A2
+        SET  A8=A8/2
+        SET  C1=A1
+        SET  C2=A2
+        SET  C3=I3
+        SET  C4=I4
+
+        SET  I3=I1
+        SET  I4=I2
+        SET  A1=I10
+        SET  A2=I15
+        SET  I11=A7-A1
+        SET  I12=A8-A2
+        SET  A12=C12*-1
+        SET  C12=A12
+
+GO2A:   SET  A11=I11*I11
+        SET  A12=I12*I12
+        SET  A10=A11+A12
+        SQR  I14 A10                             ; Distance 3
+        SET  A11=I11/I14
+        SET  A12=I12/I14
+        ATN  A0 A11 A12                          ; Bearing 3
+
+        SET  A14=A9-I9
+        SET  A13=A14*I14
+        SET  A13=A13*2
+        SET  A10=A14*A14
+        SET  A11=I14*I14
+        SET  A12=A9*A9
+
+        TST  C0 EQ 'START',GO3
+        TST  C0 EQ 'END',GO3
+        TST  C0 EQ 'REVERSE',GO3
+        TST  C0 EQ 'SECOND',GO3
+        SET  A12=A14*A14
+
+GO3:    SET  A10=A10-A12
+        SET  A10=A10+A11
+        SET  A10=A10/A13                         ; Cos
+        SET  A11=A10*A10
+        SET  A11=1-A11
+        SQR  A11 A11                             ; Sin
+        ATN  A10 A11 A10
+
+        SET  A10=A10*C12
+        SET  C14=A10
+
+TSTYPE: TST  C0 EQ 'REVERSE',REV2
+        TST  C0 EQ 'SECOND',REV2
+        TST  C0 EQ 'END',REV2
+        SET  A10=A0-A10                          ; Bearing 4
+        GO   PT2
+
+REV2:   SET  A10=A0+A10
+
+PT2:    SCS  A11 A12 A10
+        SET  A11=A11*A14
+        SET  A12=A12*A14
+
+        SET  A3=A1+A11                           ; Calc point 2
+        SET  A4=A2+A12
+
+PT3:    SET  R28=0
+        SET  A11=A1-A3
+        SET  A12=A2-A4
+
+        SET  A11=A11/A14
+        SET  A12=A12/A14
+        SET  A11=A11*I9
+        SET  A12=A12*I9
+
+        SET  A5=A1+A11                           ; Calc point 3
+        SET  A6=A2+A12
+
+        TST  C0 EQ 'START',GO4
+        TST  C0 EQ 'END',GO4
+        TST  C0 EQ 'REVERSE',GO4
+        TST  C0 EQ 'SECOND',GO4
+
+        SET  I11=I10-A3
+        SET  I12=I15-A4
+        SET  A11=I11*I11
+        SET  A12=I12*I12
+        SET  A10=A11+A12
+        SQR  I14 A10
+        SET  A12=I9/I14
+        SET  A11=I11*A12
+        SET  A12=I12*A12
+
+        SET  A7=I10+A11                          ; Calc point 5
+        SET  A8=I15+A12
+
+GO4:    TST  C0 EQ 'START',SETCV1
+        TST  C0 EQ 'END',REVCV1
+        TST  C0 EQ 'SECOND',SETCV1
+        TST  C0 EQ 'REVERSE',REVCV1
+
+        SET  C5=I1
+        SET  C6=I2
+        SET  C7=A7
+        SET  C8=A8
+        SET  C9=I10
+        SET  C10=I15
+        SET  C15='CURVE'
+        GO   PLOTCV
+
+REVCV1: SET  C5=I3
+        SET  C6=I4
+        SET  C7=A5
+        SET  C8=A6
+        SET  C9=A1
+        SET  C10=A2
+        SET  C15='REVCV1'
+        GO   PLOTCV
+
+REVCV2: SET  C5=A5
+        SET  C6=A6
+        SET  C7=A7
+        SET  C8=A8
+        SET  C9=A3
+        SET  C10=A4
+        SET  C15='CURVE2'
+        GO   PLOTCV
+
+SETCV1: SET  C5=A7
+        SET  C6=A8
+        SET  C7=A5
+        SET  C8=A6
+        SET  C9=A3
+        SET  C10=A4
+        SET  C15='CURVE1'
+
+        TST  C0 NE 'START',PLOTCV
+        SET  C0=''
+        SET  I11=A7
+        SET  I12=A8
+        PNT  I11,I12,I0,1
+        SET  XUR=I11
+        SET  YUR=I12
+        GO   PLOTCV
+
+SETCV2: SET  C5=A5
+        SET  C6=A6
+        SET  C7=I3
+        SET  C8=I4
+        SET  C9=A1
+        SET  C10=A2
+        SET  C15='CURVE2'
+        GO   PLOTCV
+
+PLOTCV: SET  R20=R20+1
+        SET  A11=XUR-C5
+        SET  A12=YUR-C6
+        SET  A11=A11*A11
+        SET  A12=A12*A12
+        SET  A11=A11+A12
+        SQR  A14 A11                             ; Distance to last point
+        SET  A14=R13-A14                         ; Distance to next point
+
+        SET  A11=C5-C7
+        SET  A12=C6-C8
+        SET  A11=A11*A11
+        SET  A12=A12*A12
+        SET  A11=A11+A12
+        SQR  A13 A11                             ; Chord Distance
+
+        TST  A14 GT A13,END1
+        TST  A13 LT 2,END1
+
+        SET  I11=C5-C9
+        SET  I12=C6-C10
+        SET  A11=I11*I11
+        SET  A12=I12*I12
+        SET  A10=A11+A12
+        SQR  I14 A10                             ; Radius
+        TST  I14 LT 2,END1
+        SET  A11=I11/I14
+        SET  A12=I12/I14
+        ATN  A0 A11 A12                          ; Bearing
+
+        SET  A12=R13*R13
+        SET  A10=I14*I14
+        SET  A10=A10+A10
+        SET  A10=A10-A12
+
+        SET  A10=A10/2
+        SET  A10=A10/I14
+        SET  A10=A10/I14                         ; Cos
+
+        SET  A11=A10*A10
+        SET  A11=1-A11
+        SQR  A11 A11                             ; Sin
+        ATN  A10 A11 A10                         ; Increment angle
+
+NXTBRG: SET  A15=I14*I14
+        SET  A12=2*A15
+        SET  A15=A15+A15
+        SET  A11=A14*A14
+        SET  A15=A15-A11
+        SET  A15=A15/A12                         ; Cos
+
+        SET  A11=A15*A15
+        SET  A11=1-A11
+        SQR  A11 A11                             ; Sin
+        ATN  A15 A11 A15                         ; Angle to first point
+
+        SET  A10=A10*C12
+        SET  A15=A15*C12
+
+        TST  C0 NE 'SECOND',BRGPT1
+        SET  A10=A10*-1
+        SET  A15=A15*-1
+
+BRGPT1: SET  A0=A0+A15                           ; Brg to first point
+
+NXTPT1: SCS  A11 A12 A0
+        SET  A11=A11*I14
+        SET  A12=A12*I14
+        SET  I11=C9+A11                          ; Calc point
+        SET  I12=C10+A12
+
+        SET  A11=I11-C5
+        SET  A12=I12-C6
+        SET  A11=A11*A11
+        SET  A12=A12*A12
+        SET  A11=A11+A12
+        SQR  A14 A11                             ; Distance to TP1
+
+        SET  A11=I11-C7
+        SET  A12=I12-C8
+        SET  A11=A11*A11
+        SET  A12=A12*A12
+        SET  A11=A11+A12
+        SQR  A11 A11                             ; Distance to TP2
+
+TSTLEN: TST  A14 GT A13,END1
+        TST  A11 GT A13,END1
+
+PLC1:   PNT  I11,I12,I0,1
+        SET  XUR=I11
+        SET  YUR=I12
+        SET  A0=A0+A10
+        SET  R20=R20+1
+        TST  R20 GE 100,RSTSTR                   ; Problem with complex strings
+        GO   NXTPT1                              ; keep under 100 vetices
+
+RSTSTR: RST
+        SET  R20=0
+        GO   PLC1
+
+END1:   TST  C15 EQ 'CURVE',SETCV1
+        TST  C15 EQ 'CURVE1',SETCV2
+        TST  C15 EQ 'REVCV1',REVCV2
+
+        TST  C0 NE 'REVERSE',NXTSEG
+        SET  A1=C1
+        SET  A2=C2
+        SET  I3=C3
+        SET  I4=C4
+        SET  C0='SECOND'
+        SET  I11=A7-A1
+        SET  I12=A8-A2
+        GO   GO2A
+
+NXTSEG: TST  C0 EQ 'END',ENDSTR
+        GO   STRG
+
+ENDSTR: PNT  A7,A8,I0,1
+        RST
+        GO   NEXT
+
+; -------------------------------KD additions below here
+
+EXITU:  SET WWSECT=4
+        SET WWBYTE=0
+        MSG 'STCHANGING TEXT LEVEL ...'
+        SET I1=R9+1        ;level 61
+        SET I2=R9          ;level 60
+        SET R2=0
+        SET R3=0
+        SET R0=4
+        SET R1=0
+
+LOOP:   RED R0,R1
+        TST R0,LT,DFSECT CHKELE
+        TST R1,GE,DFBYTE OUT
+
+CHKELE: SET R0=ELEBLK
+        SET R1=ELECNT
+        TST XYZLEV,NE,I1 CHKEL2   ;if level 61 (contour values)
+        TST UELETY,EQ,17 GOTXT
+        GO LOOP
+
+CHKEL2: TST XYZLEV,NE,I2 LOOP   ;if level 60 (contours)
+        GO DEL60
+
+        ;change all text on level 61 to 43 and weight to 2
+GOTXT:
+        SET XYZLEV=43
+        WRT CUREBL,CUREBY
+
+        SET I10=TX.ORG(1)
+        SET I11=TX.ORG(2)
+        SET WWSECT=CUREBL
+        SET WWBYTE=CUREBY
+        KEY 'WT=2'
+        CMD CELEWT
+        PNT I10,I11
+        PNT I10,I11
+
+        SET R2=R2+1
+        SET MSG='STNumber of Text Changed='+R2
+        MSG MSG
+        GO LOOP
+
+DEL60:
+       ;delete all level 60 stuff
+        SET DGNBUF(1)=DGNBUF(1) ! @100000
+        WRT CUREBL,CUREBY
+        SET R3=R3+1
+        GO LOOP
+
+OUT:    CMD NULCMD
+        SET MSG='STNumber of Text Changed='+R2
+        MSG MSG
+        MSG 'ER'
+        MSG 'CFCompressing File....'
+        KEY 'COMPRESS DESIGN'
+
+EXITUC :MSG 'CF'
+        MSG 'PRUCM Complete'
+        SET C1='STElem Deltd:'+R3
+        SET C2='  Txt chngd:'+R2
+        SET MSG=C1+C2
+        MSG MSG
+        SET CONTRL=CONTRL & -257
+        SET WWSECT=4
+        SET WWBYTE=0
+        END

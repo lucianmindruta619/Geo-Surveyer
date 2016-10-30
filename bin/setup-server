@@ -1,0 +1,15 @@
+#!/bin/bash
+echo "*** Installing development server dependencies ***"
+echo
+cd "$( dirname "${BASH_SOURCE[0]}" )/../"
+git submodule init
+git submodule update
+sudo easy_install pip
+sudo pip install virtualenv --no-use-wheel || sudo pip install virtualenv
+virtualenv ./server/virtualenv
+. ./server/virtualenv/bin/activate
+pip install -r server/requirements-dev.txt
+./server/manage.py syncdb
+./server/manage.py migrate
+echo
+echo "*** Done installing dependencies ***"

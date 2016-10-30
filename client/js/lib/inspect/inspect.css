@@ -1,0 +1,12 @@
+.inspector{background:#FFFFFF;background:-moz-linear-gradient(top,#FFFFFF 0%,#EFEFEF 100%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#FFFFFF),color-stop(100%,#EFEFEF));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF',endColorstr='#EFEFEF',GradientType=0 );-webkit-box-shadow:0px 0px 2px #8f8f8f;-moz-box-shadow:0px 0px 2px #8f8f8f;box-shadow:0px 0px 2px #8f8f8f;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:normal;color:#333333;padding:2px 2px 2px 5px;border:1px solid #BBBBBB;position:relative;-moz-border-radius:3px;border-radius:3px;margin:15px;}
+.inspector *{font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:normal;color:#333333;}
+.inspector ul.panel{margin:0px;padding:0px;}
+.inspector ul.panel li.item{list-style:none;margin-left:12px;padding-bottom: 2px;}
+.inspector ul.panel li.item span.expandIcon{width:8px;height:8px;border:1px solid #999999;padding:1px 0 0 1px;margin:2px 3px 0px -14px;overflow:hidden;line-height:6px;display:inline-block;font-size:12px;background:#E5E5E5;background:-moz-linear-gradient(top,#E5E5E5 0%,#BCBCBC 99%);background:-webkit-gradient(linear,left top,left bottom,color-stop(0%,#E5E5E5),color-stop(99%,#BCBCBC));filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#E5E5E5',endColorstr='#BCBCBC',GradientType=0 );-moz-border-radius:2px;border-radius:2px;}
+.inspector ul.panel li.item span.expandIcon.open{width:7px;height:7px;padding:0px 0px 3px 2px;font-weight:bold;}
+.inspector ul.panel li.item span.obj_label{font-weight:normal;padding-right:5px; color:#316AC5;}
+.inspector ul.panel li.item span.obj_value{color:#000099;font-weight:bold;}
+.inspector ul.panel li.item span.obj_value> span.type{font-weight:normal;height:14px;display:inline-block;overflow:hidden;color:#008000;}
+.inspector ul.panel li.item span.obj_value> span.summary{color:#000099;font-weight:normal;font-style:italic;padding-left:5px;display:inline-block;overflow:hidden;height:12px;width:50%;font-size:9px;padding-top:2px;opacity:0.45;filter:alpha(opacity=60);}
+.inspector ul.panel li.item span.obj_value> span.summary> span.strong{font-size:9px;font-weight:bold;}
+.inspector ul.panel h1.paneltitle {background-color: #666666;border-radius: 4px 4px 0 0;color: #FFFFFF;display: block;font-size: 14px;font-weight: bold;margin-left: -6px;margin-right: -3px;margin-top: -4px;padding: 5px 10px 7px 15px;}

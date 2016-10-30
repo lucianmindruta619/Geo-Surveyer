@@ -1,0 +1,21 @@
+---
+- hosts: all
+  user: dna
+  become: yes
+  become_user: root
+  tasks:
+    - name: Start nginx
+      service: name=nginx state=started
+    
+    - name: Install nginx Config
+      template: src=../config/psutool-nginx.conf dest=/etc/nginx/sites-available/psutool-nginx.conf
+      register: copied
+    
+    - name: Create nginx symlink to enable config
+      file: src=/etc/nginx/sites-available/psutool-nginx.conf dest=/etc/nginx/sites-enabled/psutool-nginx.conf state=link
+      register: symlinked
+    
+    - name: Bounce nginx
+      service: name=nginx state=restarted
+      when: copied|changed or symlinked|changed
+

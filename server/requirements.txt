@@ -1,0 +1,11 @@
+django==1.4.5
+south==0.8.1
+dxfwrite==1.2.0
+#mysql-python==1.2.3
+sh==1.09
+#psycopg2==2.5.2
+uwsgidecorators==1.1.0
+distribute>=0.6.28
+# matplotlib==1.4.2
+# numpy==1.9.1
+# hcluster==0.2.0

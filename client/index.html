@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!--
+    
+    Copyright 2012-2014 Chris McCormick - (Lead Developer, McCormick IT).
+    
+    With contributions from:
+    
+        * Muddu Kishan
+        * Prathamesh V. Paiyyar
+        * Simon Wittber (Different Methods)
+        * James Strauss (Onetwenty)
+
+    -->
+    
+    <title>PSU Tool</title>
+    <!-- original template code from http://stemkoski.github.com/Three.js/ -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="font/ArchitectsDaughter.css" rel="stylesheet" type="text/css"/>
+    <link href="js/lib/jquery-file-uploader/css/jquery.fileupload-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="js/lib/inspect/inspect.css" rel="stylesheet" type="text/css"/>
+    <link href="js/lib/jquery-ui/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="js/lib/jquery.jsoneditor/jsoneditor.css" rel="stylesheet" type="text/css"/>
+            
+    <script src="js/lib/jquery-1.9.0.min.js"></script>
+    <script src="js/lib/jquery.when-events.js"></script>
+    <script src="js/lib/inspect/inspect.jquery.js"></script>
+    <script src="js/lib/jquery-ui.js"></script>
+    <script src="js/lib/jquery.jsoneditor/jquery.jsoneditor.min.js"></script>       
+    <script src="js/lib/sticky/jquery.sticky.js"></script>       
+
+    <script src="js/lib/three.js/build/three.min.js"></script>
+    <script src="js/lib/three.js/examples/js/Detector.js"></script>
+    <script src="js/lib/three.js/examples/js/libs/stats.min.js"></script>
+    <script src="js/lib/three.js/examples/js/controls/OrbitControls.js"></script>
+    <script src="js/lib/three.js/examples/js/controls/TrackballControls.js"></script>
+    <script src="js/lib/three.js/examples/js/loaders/OBJLoader.js"></script>
+    
+    <script src="js/lib/threex/THREEx.KeyboardState.js"></script>
+    <script src="js/lib/threex/THREEx.FullScreen.js"></script>
+    <script src="js/lib/threex/THREEx.WindowResize.js"></script>
+    
+    <script src="js/lib/parallel.js/lib/parallel.js"></script>
+    
+    <script src="js/lib/jquery-file-uploader/js/vendor/jquery.ui.widget.js"></script>
+    <script src="js/lib/jquery-file-uploader/js/jquery.iframe-transport.js"></script>
+    <script src="js/lib/jquery-file-uploader/js/jquery.fileupload.js"></script>
+    
+    <script src="js/lib/mustache/mustache.js"></script>
+    
+    <script>var csrftoken = "{{ csrf_token }}";</script>
+    <script src="js/django-csrf.js"></script>
+    
+    <script src="js/jqconsole.js"></script>
+    <script src="js/fillet.js"></script>
+    <script src="js/catmull-rom-spline/catmull-rom-spline.js"></script>
+    <script src="js/lib/delaunay/delaunay.js"></script>
+    <script src="js/contour.js"></script>
+    <script src="js/osd.js"></script>
+    <script src="js/psufile.js"></script>
+    <script src="js/psufile-3d-renderer.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/load.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/XYZtoPSU.js"></script>
+
+    <link href="css/font-awesome.min.css" rel="stylesheet"></link>
+
+    <script src="js/lib/jquery.console.js"></script>
+</head>
+<body>
+<div id="spinner"></div>
+<div id="points_menu_box">
+    <select id="points_menu">
+        </select> <button id="points_menu_button">Select</button>
+</div>
+<div id="osd"></div>
+<div id="ui">
+    <div id='ui-top'>
+        <button class='ui-button minimise' target='#ui'>_</button>
+        <h1>
+            PSU Tool
+        </h1>
+        <div class='ui-inner'>
+            <h3 id="renderer"></h3>
+            <h3 id="build"></h3>
+            <div id="point-cloud-link"></div>
+            <ul id="survey_info"></ul>
+               <p id='points_count'></p>
+            <p id="toolbuttons">
+                <button id="upload" title="Upload PSU files" class="fa fa-upload"></button>
+                <button id="export_dxf" title="Export DXF" class="fa fa-download"></button>
+                <button id="settings" title="Settings" class="fa fa-cogs"></button>
+                <p id="upload-ui" style="display: none;">
+                    <button id="upload_file" class="fileinput-button" data-url='/upload/' data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'><input type="file" name="file" id="fileInput" multiple></button>
+                </p>
+            </p>
+            
+            <div id="progressBar">
+                <div class="indicator"></div>
+            </div>
+            <ul id='points'></ul>
+        </div>
+    </div>
+    <div class='ui-inner'>
+        <div id="survey-list-block">
+            <button id="load_surveys" title="Load job" class="fa fa-folder-open"></button>
+            <button id="close_surveys" title="Close" class="fa fa-close"></button>
+            <div class="survey-list">
+                <div class="list">
+                    <div class="filters">
+                        <input name="search" placeholder="Search" id="filter_search">
+                    </div>
+                    <div class="surveys"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="togglebox">
+    <label for='toggle_meshlines'>Topography</label><input type="checkbox" name='toggle_meshlines' id="toggle_meshlines" value="1" checked>
+    <!--<label for='toggle_object'>Object</label><input type="checkbox" name='toggle_object' id="toggle_object" value="1" />-->
+    <label for='toggle_point'>Point</label><input type="checkbox" name='toggle_point' id="toggle_point" value="1" checked>
+    <label for='toggle_stringlines'>StringLines</label><input type="checkbox" name='toggle_stringlines' id="toggle_stringlines" value="1" checked>
+    <label for='toggle_contourlines'>ContourLines</label><input type="checkbox" name='toggle_contourlines' id="toggle_contourlines" value="1" checked>
+</div>
+<div id="camerabox">
+    <button id="camera_north">North</button>
+    <button id="camera_top">Top</button>
+</div>
+<div id="message"></div>
+<div id="point_data">
+    <button class='ui-button minimise' target='#point_data'>_</button>
+    <h1>
+        Points
+    </h1>
+    <div class='ui-inner'>
+        <div class="filter_points">
+            <input type="text" name="point_txt" value="Search" onclick="this.select();">
+        </div>
+        <div class="order_points">
+            <select name="points_order_choices">
+                <option value="code_asc">
+                    Order By Code A-Z
+                </option>
+                <option value="code_desc">
+                    Order By Code Z-A
+                </option>
+                <option value="count_asc">
+                    Order By Points Count(Lowest First)
+                </option>
+                <option value="count_desc">
+                    Order By Points Count(Highest First)
+                </option>
+            </select>
+        </div>
+        <h3>
+            List of Points
+        </h3>
+        <ul id="point_info"></ul>
+    </div>
+</div>
+<div id="settings-dialog" title="Settings">
+    <div id="settings-tabs">
+        <ul>
+            <li>
+                <a href="#tabs-job-settings">Job</a>
+            </li>
+            <li>
+                <a href="#tabs-global-settings">Global</a>
+            </li>
+        </ul>
+        <div id="tabs-job-settings">
+            <div id="job-settings" class="json-editor"></div>
+        </div>
+        <div id="tabs-global-settings">
+            <div id="global-settings" class="json-editor"></div>
+        </div>
+    </div>
+        <div id="export-dialog" title="Export dxf">
+            <div id="export-dialog-contents">
+                <label><input type="checkbox" id="three-d-mesh" name="three-d-mesh" value="three-d-mesh" checked="checked">3D Mesh</label><br />
+                <label><input type="checkbox" id="orig-contour" name="orig-contour" value="orig-contour" checked="checked">Original Contour</label><br />
+                <label><input type="checkbox" id="spline-contour" name="spline-contour" value="spline-contour" checked="checked">Spline Contour</label>
+            </div>
+        </div>
+</div>
+
+<div id="console">
+	<div id="error-console-header"><span id="error-console-header-caption">Console</span><span id="console-spinner"><img src='img/spinner.gif'/></span><span id="error-msg-count"></span></div>
+    <div id="error-console" class="hide"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$1" != "" ]
+then
+	data=$1
+else
+	data=131040
+fi
+
+python server/PSUTool/lib/parse-doncode-csv.py documentation/DonCode\ Context\ and\ Syntax.csv documentation/DonCode\ Context\ and\ Syntax\ MS\ Layer\ Config.csv > client/data/doncodes.json
+python server/PSUTool/lib/psufile.py documentation/surveys/$data > server/PSUTool/media/uploaded/$data/$data.json

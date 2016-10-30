@@ -1,0 +1,11 @@
+---
+- hosts: all
+  user: dna
+  tasks:
+    - name: Check out source code
+      git: repo=git@github.com:donovan-associates/PSUTool.git dest=/u/app/PSUTool version=master clone=yes recursive=yes accept_hostkey=yes 
+      register: source
+
+    - name: Make Virtualenv and Binary Dependencies
+      shell: make chdir=/u/app/PSUTool
+

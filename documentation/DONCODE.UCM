@@ -1,0 +1,2759 @@
+;------------------------------- DONCODE (TOPCODE UCM) ----------------------------------
+;
+;UCM to convert PWD TOPCODE ascii file into 3D (or 2D) file.
+;
+;Cell Library PWS.CEL used
+;
+;File Format:
+;      EASTING  NORTHING  HEIGHT  SHOT NO.  CODE1+CODE2+CODE3+CODE4#DESCRIPTION
+;
+;Microstation Version 4.0
+;
+;R. Casagrande 12/11/90  (A.E.R. Technical Services Pty. Ltd. 625-5014)
+;
+;Modified 30/10/92  (Modified May 1994 JAGR)
+;-------------------------------------------------------------- Version 4.1 ---
+
+        KEY 'NOECHO'
+
+        MSG 'STDONCODE file creation utility  Ver 1.6)'
+        MSG 'ERReset to Exit'
+
+	SET A0=EU.UOR*EU.MU
+        SET C15=A0                               ; UOR Conversion factor
+
+DIM:    TST NDICES EQ 3,CEL
+        MSG 'MS*** NOTE: Design file is 2D ***'
+
+CEL:    KEY 'RC=PWS'                             ; *** Attach PWS.CEL ***
+        TST RELERR EQ 0,FILE
+        MSG 'MS*** Error attaching PWS.CEL ***'
+        SET MSG='PRRELERR='+RELERR
+        MSG MSG
+        GET K,FILE,P,FILE,R,QUIT
+
+;--------------------------------- SETTINGS -----------------------------------
+FILE:   MSG 'PREnter Filename'
+        GET K,ACCEPT,P,FILE,R,QUIT
+
+ACCEPT: TST KEY EQ '',FILE
+        SET C0='g:\dump\'+KEY
+        TST R9 EQ 1,INCLUDE
+
+DEF:    MSG 'PRChange defaults Y/N   (Data/Return=N)'
+        SET MSG='CFFile='+C0
+        TST M0 LE 30,FILEOK
+        SET M0=27
+        SET MSG=MSG+'>>'
+
+FILEOK: SET MSG=MSG+', Scale=1:200'
+        MSG MSG
+
+        SET C10='MSRot=0, Dec=2, Breaklines=N'
+        MSG C10
+        MSG 'ERReset to Exit'
+        GET K,KEY,P,KEY,R,QUIT
+
+KEY:    SET I10=200                              ; Scale 1:200
+        SET A10=1
+        SET A9=0                                 ; Rotation (0)
+        SET R19=2                                ; Decimal places (2)
+        SET R25=0                                ; No breaklines
+        SET R28=1                                ; Process strings
+        TST KEY EQ 'Y',SCALE
+        TST KEY EQ 'y',SCALE
+        GO  CONT
+
+SCALE:  MSG 'PREnter Scale   (Data/Return=200)'
+        MSG 'ERReset to re-enter'
+        GET K,TSTSC,P,S200,R,DEF
+
+TSTSC:  TST KEY EQ '',S200
+        TST KEY EQ 0 ,SCALE 
+        SET I10=KEY
+S200:   SET A10=I10/200
+
+ROT:    MSG 'PREnter rotation   (Data/Return=0)'
+        SET MSG='CFFile='+C0
+        TST M0 LE 28,MSGOK
+        SET M0=25
+        SET MSG=MSG+'>>'
+
+MSGOK:  TST I10 GE 200000,S
+        SET MSG=MSG+', Scale='
+S:      SET MSG=MSG+'1:'
+        SET MSG=MSG+I10
+        MSG MSG
+
+REDO1:  GET K,ROTANG,P,DEC,R,DEF
+
+ROTANG: TST KEY EQ '',DEC
+        SET A9=KEY
+        TST A9 LT -360,REDO1
+        TST A9 GT 360,REDO1
+        GO  DEC
+
+DEC:    MSG 'PREnter decimal places   (Data/Return=2)'
+        SET C1='MSRot='
+        SET C1=C1+A9
+        SET C10=C1+', Dec=2, Breaklines=N'
+        MSG C10 
+REDEC:  GET K,DECPL,P,PROBRK,R,DEF
+
+DECPL:  TST KEY EQ '',PROBRK
+        TST R19 LT 0,REDEC
+        TST R19 GT 3,REDEC
+        SET R19=KEY
+        GO  PROBRK
+
+PROBRK: MSG 'PRCreate Breaklines Y/N   (Data/Return=N)'
+        SET C1=C1+', Dec='
+        SET C1=C1+R19
+        SET C10=C1+', Breaklines=N'
+        MSG C10 
+        GET K,YESNO,P,YESNO,R,DEF
+
+YESNO:  TST KEY EQ 'Y',YESBRK
+        TST KEY EQ 'y',YESBRK
+        SET R25=0
+        GO  CONT
+
+ERRBRK: MSG 'ER*** Breaklines not used in 2D file ***'
+        GO  PROBRK
+
+YESBRK: TST NDICES EQ 2,ERRBRK
+        SET R25=1
+        SET C10=C1+', Breaklines=Y'
+        MSG C10 
+
+CONT:   MSG 'PRData/Return to continue'
+        MSG C10
+        MSG 'ERReset to re-enter'
+
+READY:  GET K,INCLUDE,P,INCLUDE,R,DEF
+
+;------------------------------ READ ASCII FILE -------------------------------
+INCLUDE:MSG 'CFSetting View(s)....'
+
+        KEY 'SET OVERVIEW OFF'
+
+        KEY 'VIEW OFF'
+        PNT ,,,1
+        PNT ,,,2
+        PNT ,,,3
+        PNT ,,,4
+        PNT ,,,5
+        PNT ,,,6
+        PNT ,,,7
+        PNT ,,,8
+
+        KEY 'VIEW ON'
+        PNT ,,,1
+        PNT ,,,5
+
+        KEY 'ON=1-63'
+        PNT ,,,1
+        PNT ,,,5
+
+        KEY 'VI=TOP'                             ; Set top view (1 & 5)
+        PNT ,,,1
+        PNT ,,,5
+
+        KEY 'SET TEXT OFF'                       ; Set fast text on (1 - 8)
+        PNT ,,,1
+        PNT ,,,2
+        PNT ,,,3
+        PNT ,,,4
+        PNT ,,,5
+        PNT ,,,6
+        PNT ,,,7
+        PNT ,,,8
+
+        CMD UPDAT1
+        CMD UPDAT2
+
+        SET TPSMDE=0                             ; Set conventional mode
+
+        SET R0=DFSECT                            ; Current EOF
+        SET R1=DFBYTE
+        SET R22=R0
+        SET R23=R1
+
+        MSG 'CFReading File....'
+        MSG 'PR'
+        MSG 'ER'
+        MSG 'MS'
+        KEY 'LV=60'                              ; Temporary text level
+        KEY 'AA=0'
+        KEY 'FT=28'
+        KEY 'LL=255'                             ; Max. node line length
+        KEY 'LOCK GGROUP OFF'                    ; Turn off GG lock
+
+        SET WWSECT=DFSECT
+        SET WWBYTE=DFBYTE
+
+        SET KEY='INCLUDE '+C0                    ; Include text file
+        SET KEY=KEY+'.DTA'                        ; Try with .DTA
+        KEY
+        PNT 0,0,0,1
+
+        TST R0 NE DFSECT,START
+        TST R1 NE DFBYTE,START
+
+        SET KEY='INCLUDE '+C0                    ; Try without .TC
+        KEY
+        PNT 0,0,0,1
+
+        TST R0 NE DFSECT,START
+        TST R1 NE DFBYTE,START
+
+        MSG 'ERERROR: *** File not found ***'
+        SET MSG='CFFile='+C0
+        MSG MSG
+        SET R9=1
+        GO  FILE
+
+START:  SET R30=DFSECT                           ; End of text file
+        SET R31=DFBYTE
+        SET R24=1                                ; Set Method - NORMAL
+        KEY 'SET PARSEALL OFF'                   ; Disable parsing on Ver.4
+        KEY 'FT=1'                               ; Set Font 1 (was 61)
+        KEY 'WT=0'
+        KEY 'LC=0'
+        SET A0=C15/1000                          ; Cell UOR scale factor
+        SET A0=A0*A10
+        SET KEY='AS='+A0                         ; Set Active Scale
+        KEY
+        SET I12=R30-R0                           ; Counter calc
+        SET I12=I12*512
+        SET I15=R31-R1
+        SET I12=I12+I15
+        SET I13=I12
+
+NEXT:   TST R0 LT R30,OK                         ; Test for end of text file
+        TST R0 GT R30,TXTEND
+        TST R1 LT R31,OK
+
+TXTEND: TST R28 NE 1,EXIT
+
+        SET R26=DFSECT
+        SET R27=DFBYTE
+        SET R29=0
+        SET R12=0
+        SET R18=0
+
+        MSG 'CFPlacing strings....'
+        MSG 'PRStrings 0% completed'
+
+        SET I12=R6
+        SET I14=0
+
+        SET I1=I1+GOXUOR
+        SET I2=I2+GOXUOR
+        SET I3=I3+GOYUOR
+        SET I4=I4+GOYUOR
+
+        CMD WINDA1                               ; Set View 1
+        PNT I2,I4,,1
+        PNT I1,I3,,1
+        PNT ,,,1
+
+        CMD WINDA5                               ; Set View 5
+        PNT I2,I4,,5
+        PNT I1,I3,,5
+        PNT ,,,5
+        GO  LNCODE
+
+TXNODE: CMD DRCMPX                               ; Drop text node
+        PNT 0,0,0,1
+        PNT 0,0,0,1
+        GO  NEXT
+
+OK:     RED R0,R1
+        SET R0=ELEBLK
+        SET R1=ELECNT
+        TST UELETY EQ 7,TXNODE                   ; Check for text node
+        SET R29=R29+1
+
+        TST XYZLEV NE 60,NEXT                    ; Check for level 60
+        TST UELETY NE 17,NEXT                    ; Check for text
+
+        SET R10=0
+        SET R11=0
+        SET C11=''
+        SET C0=''
+        SET C4=''
+        SET C5=''
+        SET C6=''
+        SET C7=''
+        SET C8=''
+        SET C9=''
+        SET C12=''
+
+ASC:    TST NDICES EQ 2,ASC2D
+        TST R10 GT TX.NC3,PLACE                  ; Read XYZ, Codes and Desc.
+        TST C11 EQ 'DESC',ASCTX
+        SET R10=R10+1
+        TST R10 GT TX.NC3,LAST
+        SET UCBYT(R10)=TX.LT3(R10)
+        TST UCASC(R10) EQ ' ',ASC
+        TST UCASC(R10) EQ '#',DESTXT
+        SET C0=C0+UCASC(R10) 
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LT3(R10)
+        GO  ASC23
+
+ASC2D:  TST R10 GT TX.NCH,PLACE
+        TST C11 EQ 'DESC',ASCTX
+        SET R10=R10+1
+        TST R10 GT TX.NCH,LAST
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',ASC
+        TST UCASC(R10) EQ '#',DESTXT
+        SET C0=C0+UCASC(R10) 
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+
+ASC23:  TST C4 NE '',CHKLST                      ; If code skip test
+        TST UCASC(R10) EQ ' ',LAST
+
+CHKLST: TST UCASC(R10) EQ '+',LAST
+        TST UCASC(R10) EQ '',LAST
+        TST UCASC(R10) EQ '#',DESTXT
+        SET R10=R10-1
+        GO  ASC
+
+DESTXT: SET C11='DESC'
+        GO  LAST
+
+ASCTX:  TST NDICES EQ 2,ASCTX2
+        TST R10 GT TX.NC3,PLACE
+        SET R10=R10+1
+        TST R10 GT TX.NC3,C9
+        TST N0 GE 32,C9
+        SET UCBYT(R10)=TX.LT3(R10)
+        SET C0=C0+UCASC(R10) 
+        GO  ASCTX
+
+ASCTX2: TST R10 GT TX.NCH,PLACE
+        SET R10=R10+1
+        TST R10 GT TX.NCH,C9
+        TST N0 GE 32,C9
+        SET UCBYT(R10)=TX.LET(R10)
+        SET C0=C0+UCASC(R10) 
+        GO  ASCTX2
+
+LAST:   SET R11=R11+1
+        TST R11 EQ 1,C1
+        TST R11 EQ 2,C2
+        TST R11 EQ 3,C3
+        TST R11 EQ 4,C4
+        TST R11 EQ 5,C5
+        TST R11 EQ 6,C6
+        TST R11 EQ 7,C7
+        TST R11 EQ 8,C8
+        GO  PLACE
+
+C1:     TST C0 EQ '',NEXT                        ; If blank go next
+        SET C1=C0                                ; Easting
+        SET N0=1
+        TST C0 EQ ';',NEXT                       ; Disregard if line starts
+        TST C0 EQ '*',NEXT                       ; with ; or *
+        SET C0=''
+        GO  ASC
+
+C2:     SET C2=C0                                ; Northing
+        SET C0=''
+        GO  ASC
+
+C3:     SET C3=C0                                ; Height
+        SET C0=''
+        GO  ASC
+
+C4:     SET C4=C0                                ; Shot No.
+        SET C0=''
+        GO  ASC
+
+C5:     SET C5=C0                                ; Code (1)
+        SET C0=''
+        GO  ASC
+
+C6:     SET C6=C0                                ; Code (2)
+        SET C0=''
+        GO  ASC
+
+C7:     SET C7=C0                                ; Code (3)
+        SET C0=''
+        GO  ASC
+
+C8:     SET C8=C0                                ; Code (4)
+        SET C0=''
+        GO  ASC
+
+C9:     SET C9=C0                                ; Description
+        SET C0=''
+
+PLACE:  SET A1=C1*C15
+        SET A1=A1+GOXUOR
+        SET A2=C2*C15
+        SET A2=A2+GOYUOR
+        SET A3=C3*C15
+        SET A3=A3+GOZUOR
+
+        TST A1 GT 2147483500,FILERR              ; Test if point is on plane
+        TST A1 LT -2147483500,FILERR
+        TST A2 GT 2147483500,FILERR
+        TST A2 LT -2147483500,FILERR
+  
+        TST A3 LT -2147483500,FILERR
+
+        SET R12=R12+1
+
+        SET R20=0
+        SET C11=''
+        SET C10=''
+        TST R28 EQ 1,LNSTRG
+        GO  CODE
+
+;---------------------------------- STRINGS -----------------------------------
+LNSTRG: TST R29 GT 1,ETEST1
+        SET I1=C1*C15
+        SET I2=C1*C15
+        SET I3=C2*C15
+        SET I4=C2*C15
+
+ETEST1: SET I0=C1*C15                            ; Work out max & min co-ords
+        TST I0 GT I1,EMAX
+        GO ETEST2
+
+EMAX:   SET I1=I0
+
+ETEST2: TST I0 LT I2,EMIN
+        GO  NTEST1
+
+EMIN:   SET I2=I0
+
+NTEST1: SET I0=C2*C15
+        TST I0 GT I3,NMAX
+        GO NTEST2
+
+NMAX:   SET I3=I0
+
+NTEST2: TST I0 LT I4,NMIN
+        GO  SRTCHK
+
+NMIN:   SET I4=I0
+
+;------------------------------- SORT STRINGS --------------------------------
+SRTCHK: SET I11=R30-R0
+        SET I11=I11*512
+        SET I15=R31-R1
+        SET I11=I11+I15
+        SET I11=I13-I11
+        SET I11=I11*10
+        TST I11 LT I12,STRCHK
+        SET I14=I14+10
+
+        SET MSG='PRSorting '+I14
+        SET MSG=MSG+'% completed'
+        MSG MSG
+        SET I12=I12+I13
+
+STRCHK: TST R29 GT 1,STRING
+        MSG 'CFSorting strings....'
+        MSG 'PRSorting 0% completed'
+
+STRING: SET R20=R20+1
+        TST R20 EQ 1,CODE1
+        TST R20 EQ 2,CODE2
+        TST R20 EQ 3,CODE3
+        TST R20 EQ 4,CODE4
+        GO  NEXT  
+
+CODE1:  SET C0=C5
+        SET UCASC=C0
+        GO  CLTEST
+
+CODE2:  SET C0=C6
+        SET UCASC=C0
+        GO  CLTEST
+
+CODE3:  SET C0=C7
+        SET UCASC=C0
+        GO  CLTEST
+
+CODE4:  SET C0=C8
+        SET UCASC=C0
+
+CLTEST: TST C0 EQ '',NEXT                        ; If no more codes next
+        TST C0 EQ 'LC',CLOSE                     ; Test for string closure
+        TST C0 EQ 'RC',CLOSE
+
+        TST C0 EQ 'ANPG',APEG
+        TST C0 EQ 'PGAN',APEG
+        TST C0 EQ 'LNPG',LPEG
+        TST C0 EQ 'PGLN',LPEG
+        TST C0 EQ 'CLPG',CPEG
+        TST C0 EQ 'PGCL',CPEG
+
+        SET R10=1
+        SET KEY=''
+        SET C10=''
+        SET C1=''
+
+TEST:   TST R10 GT N0,STRCDE
+        TST UCASC(R10) EQ '-',CDENUM
+        SET C1=C1+UCASC(R10)                     ; String code(s)
+        SET R10=R10+1
+        GO  TEST
+
+CDENUM: SET R10=R10+1
+        TST R10 GT N0,STRCDE
+        TST UCASC(R10) EQ ':',SCODE 
+        SET C10=C10+UCASC(R10)                   ; String number/letter(s)
+        GO  CDENUM
+
+SCODE:  CMD NULCMD
+        KEY 'LV=38'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'C0=0'
+        CMD TXJS2                                ; Sewer MH code
+        CMD PTEXT                                ; Place string code
+        KEY C10
+        PNT A1,A2,A3,1
+        SET R6=R6+1
+        SET C10=C10+UCASC(R10)
+
+        TST R24 NE 1,CDENUM                      ; Check if method set
+        TST C1 EQ 'OL',OLCODE                    ; Check if OL
+        TST C1 EQ 'LJ',OLCODE                    ; Check if LJ
+        GO  CDENUM
+
+OLCODE: MSG 'MSROUTE PLAN - Distance method'
+        SET R24=3                                ; Set DISTANCE METHOD
+        GO  CDENUM
+
+STRCDE: TST C10 EQ '',STRING
+        SET R10=0
+        SET R11=1
+        SET C0=''
+        SET UCASC=C1
+
+STRDES: SET R10=R10+1
+        TST R11 GT 2,STINFO
+        TST R10 GT N1,NOLEV
+        TST UCASC(R10) EQ '-',NOLEV
+        TST UCBYT(R10) LT 48,STRCHR
+        TST UCBYT(R10) GT 57,STRCHR
+        GO  STRDES
+
+STRCHR: SET C0=C0+UCASC(R10)                     ; String code
+        SET R11=R11+1
+        GO  STRDES
+
+STINFO: CMD NULCMD
+        TST C0 EQ 'LC',STCLOSE                   ; Test for string closure
+        TST C0 EQ 'RC',STCLOSE
+        GO  LVCDE
+
+CLOSE:  SET C12=C10
+        GO  CL
+
+STCLOSE:SET C12=C10
+        GO  STCL
+
+APEG:   TST R24 EQ 3,STRING                      ; If DISTANCE method skip
+        SET C12=C10+'+AP'
+        GO  CHREAD
+
+LPEG:   TST R24 EQ 3,STRING                      ; If DISTANCE method skip
+        SET C12=C10+'+LP'
+        GO  CHREAD
+
+CPEG:   TST R24 EQ 3,STRING                      ; If DISTANCE method skip
+        SET C12=C10+'+CP'
+        GO  CHREAD
+
+;-------------------------------- STRING CODES --------------------------------
+LVCDE:  KEY 'WT=0'
+        KEY 'CO=0'
+        KEY 'LC=0'
+
+        TST C0 EQ 'OL',ONLINE
+        TST C0 EQ 'LJ',ONLINE
+        TST C0 EQ 'PR',LV10                      ; Code levels
+
+        TST C0 EQ 'TM',LV52
+        TST C0 EQ 'WM',LV52
+        TST C0 EQ 'TN',LV52
+        TST C0 EQ 'RV',LV52
+
+        TST C0 EQ 'TL',LV53
+
+        TST C0 EQ 'SL',LV54
+        TST C0 EQ 'SM',LV54
+        TST C0 EQ 'RI',LV54
+
+        TST C0 EQ 'EM',LV55
+        TST C0 EQ 'EP',LV55
+        TST C0 EQ 'LP',LV55
+
+        TST C0 EQ 'PI',LV56
+        TST C0 EQ 'HW',LV56
+        TST C0 EQ 'BC',LV56
+        TST C0 EQ 'MH',LV41
+        TST C0 EQ 'SW',LV56
+
+        TST C0 EQ 'GM',LV57
+
+        TST C0 EQ 'BG',LV40
+        TST C0 EQ 'SH',LV40
+        TST C0 EQ 'SB',LV37
+        TST C0 EQ 'WA',LV40
+        TST C0 EQ 'SR',LV40
+        TST C0 EQ 'RP',LV40
+        TST C0 EQ 'AM',LV40
+        TST C0 EQ 'BI',LV40
+        TST C0 EQ 'OC',LV40
+        TST C0 EQ 'CM',LV40
+        TST C0 EQ 'VR',LV40
+        TST C0 EQ 'PH',LV40
+        TST C0 EQ 'EV',LV40
+        TST C0 EQ 'WS',LV40
+        TST C0 EQ 'WH',LV40
+        TST C0 EQ 'WW',LV40
+        TST C0 EQ 'DO',LV40
+        TST C0 EQ 'RG',LV40
+        TST C0 EQ 'DK',LV40
+        TST C0 EQ 'SP',LV40
+        TST C0 EQ 'PX',LV40
+        TST C0 EQ 'GG',LV40
+        TST C0 EQ 'CX',LV40
+
+        TST C0 EQ 'PE',LV41
+        TST C0 EQ 'BS',LV41
+ 
+        TST C0 EQ 'RF',LV42
+        TST C0 EQ 'FC',LV42
+        TST C0 EQ 'MF',LV42
+        TST C0 EQ 'PF',LV42
+        TST C0 EQ 'BF',LV42
+        TST C0 EQ 'GT',LV42
+        TST C0 EQ 'WF',LV42
+        TST C0 EQ 'RW',LV42
+        TST C0 EQ 'GD',LV42
+        TST C0 EQ 'GL',LV42
+
+        TST C0 EQ 'BA',LV45
+        TST C0 EQ 'BB',LV45
+        TST C0 EQ 'RO',LV45
+        TST C0 EQ 'TB',LV45
+        TST C0 EQ 'FF',LV45
+
+        TST C0 EQ 'TR',LV46
+        TST C0 EQ 'BU',LV46
+        TST C0 EQ 'SU',LV46
+	TST C0 EQ 'SA',LV46
+        TST C0 EQ 'LA',LV46
+        TST C0 EQ 'GA',LV46
+
+        TST C0 EQ 'PA',LV37
+        TST C0 EQ 'CP',LV37
+        TST C0 EQ 'EB',LV47
+        TST C0 EQ 'EC',LV37
+        TST C0 EQ 'PV',LV37
+        TST C0 EQ 'DW',LV37
+        TST C0 EQ 'IS',LV47
+        TST C0 EQ 'KB',LV47
+        TST C0 EQ 'KR',LV47
+        TST C0 EQ 'PC',LV47
+        TST C0 EQ 'PL',LV47
+        TST C0 EQ 'RD',LV47
+        TST C0 EQ 'RT',LV47
+        TST C0 EQ 'TK',LV47
+        TST C0 EQ 'VC',LV47
+        TST C0 EQ 'MC',LV47
+
+        TST C0 EQ 'CK',LV49
+        TST C0 EQ 'CN',LV49
+        TST C0 EQ 'GU',LV49
+        TST C0 EQ 'WC',LV49
+        TST C0 EQ 'DD',LV49
+        TST C0 EQ 'DR',LV49
+        TST C0 EQ 'TD',LV49
+        TST C0 EQ 'WL',LV49
+
+        TST C0 EQ 'BY',LV50
+;------------------------------------------------------------------------------
+
+ENDTST: SET C0=''
+        SET R10=R10-1
+        SET R11=1
+        GO  STRDES
+
+LV10:   KEY 'LC=0'                               ; Set code level & symbology
+        KEY 'WT=2'
+        KEY 'CO=17'
+        SET KEY='LV=10'
+        KEY
+        GO  ENDTST
+
+LV28:   KEY 'LC=5'
+        KEY 'WT=0'
+        KEY 'CO=7'
+        SET KEY='LV=28'
+        KEY
+        GO  ENDTST
+
+LV30:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=3'
+        SET KEY='LV=30'
+        KEY
+        GO  ENDTST
+
+LV31:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=4'
+        SET KEY='LV=31'
+        KEY
+        GO  ENDTST
+
+LV32:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=5'
+        SET KEY='LV=32'
+        KEY
+        GO  ENDTST
+
+LV33:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=6'
+        SET KEY='LV=33'
+        KEY
+        GO  ENDTST
+
+LV34:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=7'
+        SET KEY='LV=34'
+        KEY
+        GO  ENDTST
+
+LV35:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=8'
+        SET KEY='LV=35'
+        KEY
+        GO  ENDTST
+
+LV37:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=5'
+        SET KEY='LV=37'
+        KEY
+        GO  ENDTST
+
+LV40:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=7'
+        SET KEY='LV=40'
+        KEY
+        GO  ENDTST
+
+LV41:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=10'
+        SET KEY='LV=41'
+        KEY
+        GO  ENDTST
+
+LV42:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=2'
+        SET KEY='LV=42'
+        KEY
+        GO  ENDTST
+
+LV45:   KEY 'LC=3'
+        KEY 'WT=0'
+        KEY 'CO=3'
+        SET KEY='LV=45'
+        KEY
+        GO  ENDTST
+
+LV46:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=2'
+        SET KEY='LV=46'
+        KEY
+        GO  ENDTST
+
+LV47:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=5'
+        SET KEY='LV=47'
+        KEY
+        GO  ENDTST
+
+LV49:   KEY 'LC=0'
+        KEY 'WT=1'
+        KEY 'CO=1'
+        SET KEY='LV=49'
+        KEY
+        GO  ENDTST
+
+LV50:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=16'
+        SET KEY='LV=50'
+        KEY
+        GO  ENDTST
+
+LV52:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=100'
+        SET KEY='LV=52'
+        KEY
+        GO  ENDTST
+
+LV53:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=5'
+        SET KEY='LV=53'
+        KEY
+        GO  ENDTST
+
+LV54:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=11'
+        SET KEY='LV=54'
+        KEY
+        GO  ENDTST
+
+LV55:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=4'
+        SET KEY='LV=55'
+        KEY
+        GO  ENDTST
+
+LV56:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=103'
+        SET KEY='LV=56'
+        KEY
+        GO  ENDTST
+
+LV57:   KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=131'  
+        SET KEY='LV=57'
+        KEY
+        GO  ENDTST
+
+ONLINE: KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=0'
+        SET KEY='LV=38'
+        KEY
+        SET R17=1
+        GO  ENDTST
+
+NOLEV:  SET C12=C10
+        TST KEY NE '',PLSTRG                     ; If code found PLSTRG
+        KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=0'
+        KEY 'LV=38'
+        GO  PLSTRG
+
+;---------------------------- ROUTE PLAN CHAINAGE -----------------------------
+CHREAD: CMD TXJS2                                ; Chainage peg codes
+        CMD PTEXT
+        KEY C10
+        PNT A1,A2,A3,1
+        SET R6=R6+1
+
+        SET UCASC=C9
+        SET R10=0
+        SET C1=''
+
+        TST R24 NE 1,CHTEST                      ; Check if method set
+        TST R17 NE 1,CHTEST                      ; Check for OL
+        MSG 'MSROUTE PLAN - Chainage method'
+        SET R24=2                                ; Set Method - CHAINAGE
+
+CHTEST: SET R10=R10+1
+        TST R10 GT N9,PLSTRG
+        TST UCASC(R10) EQ '*',CHGE
+        GO  CHTEST
+
+CHGE:   SET R10=R10+1  
+        TST R10 GT N9,CHEND
+        TST UCASC(R10) EQ '',CHGE
+        TST UCASC(R10) EQ '0',CHNUM
+        TST UCASC(R10) EQ '1',CHNUM
+        TST UCASC(R10) EQ '2',CHNUM
+        TST UCASC(R10) EQ '3',CHNUM
+        TST UCASC(R10) EQ '4',CHNUM
+        TST UCASC(R10) EQ '5',CHNUM
+        TST UCASC(R10) EQ '6',CHNUM
+        TST UCASC(R10) EQ '7',CHNUM
+        TST UCASC(R10) EQ '8',CHNUM
+        TST UCASC(R10) EQ '9',CHNUM
+        TST UCASC(R10) EQ '.',CHNUM
+        GO  CHGE
+
+CHNUM:  SET C1=C1+UCASC(R10)                     ; Chainage
+        GO  CHGE
+
+CHEND:  TST C1 EQ '',PLSTRG                      ; Add start chainage to code
+        SET C12=C12+'*'
+        SET C12=C12+C1
+        GO  PLSTRG
+;------------------------------------------------------------------------------
+
+STCL:   CMD TXJS2                                ; Closure in string code
+        CMD PTEXT
+        KEY C12
+        PNT A1,A2,A3,1
+        SET R6=R6+1
+
+CL:     TST C0 EQ 'RC',RCLOSE
+        SET C12=C10+'+LC'
+        GO  PLSTRG
+
+RCLOSE: SET C12=C10+'+RC'
+        GO  PLSTRG
+
+PLSTRG: CMD TXJS2
+        CMD PTEXT
+        SET C12=C12+'#'
+        SET C12=C12+C3                           ; Add height
+        KEY C12
+        PNT A1,A2,A3,1
+        SET R6=R6+1
+        GO  STRING 
+
+;--------------------------------- PLOT STRINGS -------------------------------
+LNCODE: SET R0=R30
+        SET R1=R31
+        SET C10=''
+        SET R7=0
+        SET R13=0                                ; Set centreline OFF
+        SET R18=0                                ; Reset start of line
+
+NXTSTR: TST R0 LT R26,OKSTR                      ; Test for end string codes
+        TST R0 GT R26,TSTEND
+        TST R1 LT R27,OKSTR
+
+TSTEND: TST ACTLEV EQ 28,CLSTRG                  ; If tie close string
+        GO  ENDSTR
+
+OKSTR:  RED R0,R1
+        SET R0=ELEBLK
+        SET R1=ELECNT
+        TST XYZLEV EQ 63,NXTSTR
+        SET R10=1
+        SET C0=''
+
+ASCSTR: TST NDICES EQ 2,STR2D
+
+        TST R10 GT TX.NC3,STR
+        SET UCBYT(R10)=TX.LT3(R10)
+        SET C0=C0+UCASC(R10) 
+        SET R10=R10+1
+        GO  ASCSTR
+
+STR2D:  TST R10 GT TX.NCH,STR
+        SET UCBYT(R10)=TX.LET(R10)
+        SET C0=C0+UCASC(R10) 
+        SET R10=R10+1
+        GO  ASCSTR
+
+STR:    SET UCASC=C0
+        SET R2=N0
+        SET R10=0
+        SET C0=''
+        SET C1=''
+        SET C3=''
+        SET C12=''
+        SET MSG=''
+
+STRSRT: SET R10=R10+1
+        TST R10 GT R2,STRTST
+        TST UCASC(R10) EQ ':',SMHCDE
+        TST UCASC(R10) EQ '+',STCODE
+        TST UCASC(R10) EQ '#',STHT
+        SET C0=C0+UCASC(R10)                     ; String number/letter(s)
+        GO  STRSRT
+
+STCODE: SET R10=R10+1
+        TST R10 GT R2,STRTST
+        TST UCASC(R10) EQ '*',STCHGE
+        TST UCASC(R10) EQ '#',STHT
+        SET C1=C1+UCASC(R10)                     ; String code
+        GO  STCODE
+
+STCHGE: SET R10=R10+1
+        TST R10 GT R2,STRTST
+        TST UCASC(R10) EQ '#',STHT
+        SET C12=C12+UCASC(R10)                   ; Start chainage
+        GO  STCHGE
+
+STHT:   SET R10=R10+1
+        TST R10 GT R2,STRTST
+        SET C3=C3+UCASC(R10)                     ; String height
+        GO  STHT
+
+SMHCDE: TST C10 EQ '',SMHLEN                     ; If first skip test
+        TST C0 NE C10,NXTSTR                     ; Test for change of code
+        TST R13 NE 1,NXTSTR                      ; If centreline OFF next
+
+SMHLEN: SET R10=R10+1
+        SET C12=''
+        ;SET C12=C0+'/'
+
+SMHNUM: TST UCASC(R10) EQ '#',SMHT
+        SET C12=C12+UCASC(R10)                   ; Sewer MH number
+        SET R10=R10+1
+        TST R10 GT R2,PLCSMH
+        GO  SMHNUM
+
+SMHT:   SET R10=R10+1
+        TST R10 GT R2,PLCSMH
+        SET C3=C3+UCASC(R10)                     ; String height
+        GO  SMHT
+
+TESTCH: TST C10 EQ '',PLCCHG                     ; If first skip test
+        TST C0 NE C10,NXTSTR                     ; Test for change of code
+        TST R13 NE 1,NXTSTR                      ; If centreline OFF next
+        GO  PLCCHG
+
+STRTST: TST C1 EQ 'AP',TESTCH                    ; Test for chainage codes
+        TST C1 EQ 'LP',TESTCH
+        TST C1 EQ 'CP',TESTCH
+
+        TST C10 EQ '',FIRST
+        TST C0 NE C10,NXTSTR                     ; Test for change of code
+
+        TST R13 EQ 1,NXTSTR                      ; Check if centreline
+
+        TST C1 EQ 'LC',CLSTRG                    ; Check for string closure
+        TST C1 EQ 'RC',CLRECT                    ; Check for rectangular closure
+
+        SET XYZLEV=63                            ; Move processed strings
+        WRT CUREBL,CUREBY                        ; to level 63
+
+STRLN:  TST R7 EQ 1,LNVER
+
+        SET R7=1
+        SET I1=A1                                ; Store start of string co-ords
+        SET I2=A2
+        SET I3=A3
+        SET WWSECT=DFSECT
+        SET WWBYTE=DFBYTE
+        CMD PSPLST
+        PNT A1,A2,A3,1
+
+        TST NDICES EQ 2,PNT2D
+
+        SET I4=TX.OG3(1)
+        SET I5=TX.OG3(2)
+        SET I6=I4
+        SET I7=I5
+        PNT TX.OG3(1),TX.OG3(2),TX.OG3(3),1
+        GO  SETSTR
+
+PNT2D:  SET I4=TX.ORG(1)                         ; Store second point co-ords
+        SET I5=TX.ORG(2)
+        SET I6=I4
+        SET I7=I5
+        PNT TX.ORG(1),TX.ORG(2),0,1
+        GO  SETSTR
+
+LNVER:  SET I8=I6                                ; Store previous co-ords
+        SET I9=I7
+        TST NDICES EQ 2,LNVER2
+
+        SET I6=TX.OG3(1)                         ; Store current co-ords
+        SET I7=TX.OG3(2)
+        PNT TX.OG3(1),TX.OG3(2),TX.OG3(3),1
+        GO  SETSTR
+
+LNVER2: SET I6=TX.ORG(1)                         ; Store current co-ords
+        SET I7=TX.ORG(2)
+        PNT TX.ORG(1),TX.ORG(2),0,1
+        GO  SETSTR
+
+FIRST:  SET KEY=XYZLEV
+        SET XYZLEV=63                            ; Move processed strings
+        WRT CUREBL,CUREBY                        ; to level 63
+        CMD NULCMD
+        SET IDSYMB=SY.DSP                        ; Set symbology
+        SET KEY='LV='+KEY                        ; Set level
+        KEY
+
+SETSTR: SET C10=C0
+        SET R5=R5+1
+        TST NDICES EQ 2,SET2D
+
+        SET A1=TX.OG3(1)        
+        SET A2=TX.OG3(2)        
+        SET A3=TX.OG3(3)
+        GO  NXTSTR
+
+SET2D:  SET A1=TX.ORG(1)        
+        SET A2=TX.ORG(2)        
+        SET A3=0
+        GO  NXTSTR
+
+CLSTRG: PNT I1,I2,I3,1                           ; Close string back to start
+        SET R5=R5+1
+        GO  ENDSTR
+
+CLRECT: TST I4 NE I6,RCALC                       ; Rectangular closure calc
+        TST I5 NE I7,RCALC
+        GO  ENDSTR
+
+RCALC:  SET I4=I4-I1                             ; Calc missing distance
+        SET I5=I5-I2
+        SET A0=I4*I4
+        SET A15=I5*I5
+        SET A0=A0+A15
+        SQR A0 A0
+        TST A0 EQ 0,ENDSTR
+        SET A4=I4/A0
+        SET A5=I5/A0
+        ATN A4 A4 A5
+        SET A4=A4-90                             ; Bearing 1
+
+        SET I8=I6-I8
+        SET I9=I7-I9
+        SET A0=I8*I8
+        SET A15=I9*I9
+        SET A0=A0+A15
+        SQR A0 A0
+        TST A0 EQ 0,ENDSTR
+        SET A8=I8/A0
+        SET A5=I9/A0
+        ATN A8 A8 A5
+        SET A8=A8-90                             ; Bearing 2
+
+        SET I6=I6-I1
+        SET I7=I7-I2
+        SET A0=I6*I6
+        SET A15=I7*I7
+        SET A0=A0+A15
+        SQR A0 A0                                ; Hypotenuse distance
+        TST A0 EQ 0,ENDSTR
+        SET A6=I6/A0
+        SET A7=I7/A0
+        ATN A6 A6 A7                             ; Hypotenuse bearing
+
+        SET A6=A6-A8
+        SET A7=A4-A8
+        SCS A6 A5 A6
+        SCS A7 A5 A7
+        TST A7 EQ 0,ENDSTR
+        SET A0=A0*A6
+        SET A0=A0/A7                             ; Missing distance
+ 
+        SET A15=10000*C15
+        TST A0 GT A15,ENDSTR                     ; If > 10kms do not plot
+        SCS A6 A7 A4
+        SET I6=A6*A0
+        SET I7=A7*A0
+
+        SET I4=I1+I6
+        SET I5=I2+I7
+        PNT I4,I5,I3,1                           ; New point
+        PNT I1,I2,I3,1
+        SET R5=R5+1
+
+ENDSTR: RST
+        TST ACTLEV NE 28,COUNTER                 ; Check if tie close
+
+TIE1:   SET A8=I4-I1                             ; Calc tie 1
+        SET A11=I5-I2
+        SET A1=I4+I1
+        SET A1=A1/2
+        SET A2=I5+I2        
+        SET A2=A2/2
+        SET R21=1                                ; Tie counter
+        GO  TIEPLT
+
+TIE2:   SET A8=I6-I8                             ; Calc tie 2
+        SET A11=I7-I9
+        SET A1=I6+I8
+        SET A1=A1/2
+        SET A2=I7+I9        
+        SET A2=A2/2
+        GO  TIEPLT
+
+TIE3:   SET A8=I6-I1                             ; Calc tie 3
+        SET A11=I7-I2
+        SET A1=I1+I6
+        SET A1=A1/2
+        SET A2=I2+I7        
+        SET A2=A2/2
+
+TIEPLT: CMD NULCMD
+        KEY 'LV=28'                              ; Tie distance text level
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=7'
+        CMD TXJS8
+        SET A0=0.36*A10                          ; Tie text size
+        SET KEY='TX='+A0
+        KEY
+        SET A0=0.25*A10
+        SET KEY='LS='+A0
+        KEY
+
+        KEY 'PLACE TEXT ABOVE'
+        SET A0=A8*A8
+        SET A15=A11*A11
+        SET A0=A0+A15
+        SQR A0 A0
+        SET I10=A0
+        SET A0=I10/C15
+        SET A0=A0+0.0051                         ; Roundoff to 0.01  
+        SET C0=A0
+        SET N0=N0-2
+        KEY C0
+        PNT A1,A2,,1
+        PNT 
+        RST
+
+        CMD NULCMD
+        KEY 'LV=29'                              ; Tie bearing text level
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=7'
+        CMD TXJS6
+
+        TST I10 EQ 0,TSTTIE
+        SET A8=A8/I10                            ; Sin
+        SET A11=A11/I10                          ; Cos
+        ATN A0 A8 A11
+
+        KEY 'PLACE TEXT BELOW'
+        SET A0=A0+0.0083333                      ; Add 0.5'
+        SET I10=A0                               ; Bearing
+        SET C10=' '+I10
+        SET C10=C10+'^ '
+        SET A0=A0-I10
+        SET A0=A0*60
+        SET I10=A0
+        TST I10 GE 10,OKMIN
+        SET C10=C10+'0'
+
+OKMIN:  SET C10=C10+I10
+        SET C10=C10+'@047 '
+
+        KEY C10
+        PNT A1,A2,,1
+        PNT
+
+TSTTIE: SET R21=R21+1
+        TST R21 EQ 2,TIE2
+        TST R21 EQ 3,TIE3
+
+COUNTER:SET I11=R5*10
+        TST I11 LT I12,NXTLST
+        SET I14=I14+10
+
+        SET MSG='PRStrings '+I14
+        SET MSG=MSG+'% completed'
+        MSG MSG
+        SET I12=I12+R6
+
+NXTLST: TST C10 NE '',LNCODE
+        SET R0=R22
+        SET R1=R23
+        SET R28=0
+        SET R8=1
+        SET I12=I13                              ; Reset counter
+        SET I14=0
+
+        MSG 'PRProcessing 0% completed'
+        MSG 'CFPlacing points....'
+        TST R25 EQ 0,NEXT                        ; Test if breaklines required
+
+;------------------------------ CREATE BREAKLINES -----------------------------
+        SET WWSECT=R26
+        SET WWBYTE=R27
+        SET A4=VT1ORG(1)+VT1EXT(1)
+        SET A5=VT1ORG(2)+VT1EXT(2)   
+        CMD PFENCB
+        PNT VT1ORG(1),VT1ORG(2),,1
+        PNT A4,A5,,1
+        MSG 'CFCreating Breaklines....'
+        KEY 'LV=38'
+        KEY 'OF=1-63'
+        PNT ,,,1
+        KEY 'ON=37,40,45,47,49'                     ; Valid breakline levels
+        PNT ,,,1
+        CMD OVRLAP
+        CMD CPFNCC
+        PNT 0,0,0,1
+        KEY 'LV=63'
+        PNT 0,0,0,1
+
+        CMD INSIDE                               ; Reset display & fence lock
+        CMD PFENCB
+        KEY 'LV=38'
+        KEY 'OF=1-63'
+        PNT ,,,1
+        KEY 'ON=1-59'
+        PNT ,,,1
+
+        MSG 'PRProcessing 0% completed'
+        MSG 'CFPlacing points....'
+        GO  NEXT
+
+;------------------------------------- CELL CODES -----------------------------
+CODE:   SET R20=R20+1
+        TST R20 EQ 1,CC1
+        TST R20 EQ 2,CC2
+        TST R20 EQ 3,CC3
+        TST R20 EQ 4,CC4
+        TST R20 EQ 5,DC5
+        GO  ENDCDE
+
+CC1:    SET C0=C5
+        GO  CTEST
+
+CC2:    SET C0=C6
+        GO  CTEST
+
+CC3:    SET C0=C7
+        GO  CTEST
+
+CC4:    SET C0=C8
+        GO  CTEST
+
+DC5:    SET C0=C9
+
+CTEST:  TST C0 EQ '',ENDCDE
+        SET UCASC=C0
+        SET MSG=C0
+        SET R10=0
+        SET C10=''
+        SET C1=''
+
+SCTEST: SET R10=R10+1
+        TST R10 GT N0,SCCDE
+        TST UCASC(R10) EQ '-',SCCDE              ; If string code skip
+        TST R10 GT 2,STCDE2
+        SET C1=C1+UCASC(R10)                     ; Code 1
+        GO  SCTEST
+
+STCDE2: SET C10=C10+UCASC(R10)                   ; Code 2
+        GO  SCTEST
+
+SCCDE:  CMD NULCMD
+        SET KEY='AA='+A9
+        KEY
+        KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=0'
+
+        KEY 'AC= '
+
+;----------------------------- TOPCODE CELL CODES -----------------------------
+        TST C1 EQ 'BM',BM
+        TST C1 EQ 'DH',DH
+        TST C1 EQ 'ST',ST
+        TST C1 EQ 'SS',SS
+        TST C1 EQ 'PM',PM
+        TST C1 EQ 'PG',PG
+        TST C1 EQ 'SK',SK
+        TST C1 EQ 'KO',KO
+        TST C1 EQ 'HO',HO
+        TST C1 EQ 'GM',GM
+        TST C1 EQ 'IP',IP
+        TST C1 EQ 'CE',CE
+        TST C1 EQ 'CT',CT
+        TST C1 EQ 'C2',ECTC
+        TST C1 EQ 'C3',ECTCWC
+        TST C1 EQ 'C4',ECWC
+        TST C1 EQ 'C5',ECTCGC
+        TST C1 EQ 'SG',SG
+        TST C1 EQ 'CG',CG
+        TST C1 EQ 'VT',VT
+        TST C1 EQ 'TG',WT
+        TST C1 EQ 'CW',WC
+        TST C1 EQ 'MK',MK
+        TST C1 EQ 'RM',RM
+        TST C1 EQ 'TM',TM
+        TST C1 EQ 'PP',PP
+        TST C1 EQ 'SU',SU
+	TST C1 EQ 'SA',SA
+
+        TST C1 EQ 'TR',TR
+        TST C1 EQ 'DT',DT
+        TST C1 EQ 'BS',BS
+        TST C1 EQ 'BU',BU
+        TST C1 EQ 'GB',GB
+        TST C1 EQ 'SI',SI
+        TST C1 EQ 'TA',TA
+        TST C1 EQ 'TN',TN
+        TST C1 EQ 'BH',BH
+
+        TST C1 EQ 'PO',PO
+        TST C1 EQ 'EP',EP
+        TST C1 EQ 'LP',LP
+        TST C1 EQ 'TF',TF
+        TST C1 EQ 'LT',LT
+
+        TST C1 EQ 'MH',MH
+        TST C1 EQ 'SM',SM
+        TST C1 EQ 'SW',SW
+        TST C1 EQ 'SJ',SJ
+        TST C1 EQ 'LH',LH
+        TST C1 EQ 'VT',VT
+        TST C1 EQ 'SE',SE
+        TST C1 EQ 'IL',IL 
+
+        TST C1 EQ 'GP',GP
+        TST C1 EQ 'TC',TC
+        TST C1 EQ 'PT',PT
+        TST C1 EQ 'EL',EL
+        TST C1 EQ 'SW',SW
+        TST C1 EQ 'GS',GS
+        TST C1 EQ 'UB',UB
+
+        TST C1 EQ 'ME',ME
+        TST C1 EQ 'WR',WR
+
+        TST C1 EQ 'SV',SV
+        TST C1 EQ 'HY',HY
+        TST C1 EQ 'HR',HR
+        TST C1 EQ 'AV',AV
+        TST C1 EQ 'DV',DV
+        TST C1 EQ 'SC',SC
+        TST C1 EQ 'SY',SY
+
+        TST C1 EQ '',CODE
+
+        SET UCASC=C1
+        SET R10=0
+
+USRCDE: SET R10=R10+1                            ; Test for codes 00 to 99
+        TST R10 GE 3,USRCEL
+        TST UCASC(R10) EQ '0',USRCDE
+        TST UCASC(R10) EQ '1',USRCDE
+        TST UCASC(R10) EQ '2',USRCDE
+        TST UCASC(R10) EQ '3',USRCDE
+        TST UCASC(R10) EQ '4',USRCDE
+        TST UCASC(R10) EQ '5',USRCDE
+        TST UCASC(R10) EQ '6',USRCDE
+        TST UCASC(R10) EQ '7',USRCDE
+        TST UCASC(R10) EQ '8',USRCDE
+        TST UCASC(R10) EQ '9',USRCDE
+        GO  CODE
+
+USRCEL: SET KEY='AC='+C1                         ; User defined cell
+        KEY
+        GO  PACELL
+
+;------------------------------------------------------------------------------
+
+SW:     TST C10 EQ 'MH',SWMH
+        TST C10 EQ 'PT',SWPT
+        GO  CODE
+
+SE:     TST C10 EQ 'VT',SEVT
+        GO  CODE
+
+EL:     TST C10 EQ 'PT',ELPT
+        TST C10 EQ 'ME',ELME
+        GO  CODE
+
+WR:     TST C10 EQ 'ME',WRME
+        GO  CODE
+
+WR:     TST C10 EQ 'ME',WRMENC
+        GO  CODE
+
+GS:     TST C10 EQ 'PT',GSPT
+        TST C10 EQ 'ME',GSME
+        GO  CODE
+
+TC:     TST C10 EQ 'PT',TCPT
+        GO  CODE
+
+TR:     KEY 'AC=TREE'
+        SET R10=0
+        SET C11=''
+        SET C0=''
+        SET UCASC=C9
+        GO  TREE
+
+DT:     KEY 'AC=DEADTR'
+        SET R10=0
+        SET C11=''
+        SET C0=''
+        SET UCASC=C9
+        GO  TREE
+
+PO:     KEY 'AC=POLE'
+        GO  PACELL
+
+EP:     KEY 'AC=EP'
+        GO  PACELL
+
+LP:     KEY 'AC=LITEP'
+        GO  PACELL
+
+TF:     KEY 'AC=TRANSF'
+        GO  PACELL
+
+LT:     KEY 'AC=TLIGHT'
+        GO  PACELL
+
+MH:     KEY 'AC=MH'
+        GO  PACELL
+
+SM:     KEY 'AC=SMH'
+        GO  PACELL
+
+IL:     KEY 'AC=IL'
+        GO  PACELL
+
+SWMH:   KEY 'AC=MH'
+        GO  PACELL
+
+SJ:     KEY 'AC=SERJU'
+        GO  PACELL
+
+LH:     KEY 'AC=LAMPH'
+        GO  PACELL
+
+VT:     TST C10 EQ 'SE',SEVT
+        KEY 'AC=VENT'
+        GO  PACELL
+
+SEVT:   KEY 'AC=SVENT'
+        GO  PACELL
+
+HY:     KEY 'AC=HYD'
+        GO  PACELL
+
+HR:     KEY 'AC=HR'
+        GO  PACELL
+
+KO:     KEY 'AC=KO'
+        GO  PACELL
+
+SU:     KEY 'AC=SU'
+        GO  PACELL
+
+SA:     KEY 'AC=SA'
+        GO  PACELL
+
+BU:     KEY 'AC=BU'
+        GO  PACELL
+
+CG:     KEY 'AC=CG'
+        GO PACELL
+
+HO:     KEY 'AC=HOIST'
+        GO  PACELL
+
+WC:     KEY 'AC=WC'
+        GO  PACELL
+
+SV:     KEY 'AC=SV'
+        GO  PACELL
+
+AV:     KEY 'AC=AV'
+        GO  PACELL
+
+DV:     KEY 'AC=DAV'
+        GO  PACELL
+
+SC:     KEY 'AC=SCV'
+        GO  PACELL
+
+GP:     KEY 'AC=GPIT'
+        GO  PACELL
+
+TCPT:   KEY 'AC=TP'
+        GO  PACELL
+
+PT:     TST C10 EQ 'EL',ELPT
+        TST C10 EQ 'SW',SWPT
+        TST C10 EQ 'GS',GSPT
+        TST C10 EQ 'TC',TCPT
+        KEY 'AC=PIT'
+        GO  PACELL
+
+ELPT:   KEY 'AC=ELPIT'
+        GO  PACELL
+
+SWPT:   KEY 'AC=SWP'
+        GO  PACELL
+
+GSPT:   KEY 'AC=GSPIT'
+        GO  PACELL
+
+UB:     KEY 'AC=UGEB'
+        GO  PACELL
+
+ME:     TST C10 EQ 'EL',ELME
+        TST C10 EQ 'WR',WRME
+	TST C10 EQ 'WR',WRMENC
+        TST C10 EQ 'GS',GSME
+        KEY 'AC=METER'
+        GO  PACELL
+
+ELME:   KEY 'AC=ELMET'
+        GO  PACELL
+
+GSME:   KEY 'AC=GAMET'
+        GO  PACELL
+
+WRME:   KEY 'AC=WRME'
+        GO  PACELL
+
+WRMENC:   KEY 'AC=WRME'
+        GO  PACELL
+
+SI:     KEY 'AC=SIGN'
+        GO  PACELL
+
+BS:     KEY 'AC=BSEAT'
+        GO  PACELL
+
+GB:     KEY 'AC=GBIN'
+        GO  PACELL
+
+TA:     KEY 'AC=TAP'
+        GO  PACELL
+
+BH:     KEY 'AC=BH'
+        GO  PACELL
+
+TN:     KEY 'AC=TANK'
+        GO  PACELL
+
+ST:     KEY 'AC=STN'               ;'AC=STNHT'
+        GO  PACELL
+
+SS:     KEY 'AC=SSMHT'
+        GO  PACELL
+
+PM:     KEY 'AC=PMHT'
+        GO  PACELL
+
+PG:     KEY 'AC=PEG'
+        GO  PACELL
+
+BM:     KEY 'AC=BMHT'
+        GO  PACELL
+
+DH:     KEY 'AC=DHW'
+        GO  PACELL
+
+MK:     KEY 'AC=SURMK'
+        GO  PACELL
+
+RM:     KEY 'AC=RMARK'
+        GO  PACELL
+
+PP:     KEY 'AC=PP'
+        GO  PACELL
+
+SY:     KEY 'AC=SY'
+        GO  PACELL
+
+SK:     KEY 'AC=SK'
+        GO  PACELL
+
+KO:     KEY 'AC=KO'
+        GO  PACELL
+
+IP:     KEY 'AC=IP'
+        GO  PACELL
+
+CE:     KEY 'AC=EC'
+        GO  PACELL
+
+CT:     KEY 'AC=CT'
+        GO  PACELL
+
+ECTC:   KEY 'AC=C2'
+        GO  PACELL
+
+ECTCWC: KEY 'AC=C3'
+        GO  PACELL
+
+ECWC:   KEY 'AC=C4'
+        GO  PACELL
+
+ECTCGC: KEY 'AC=C5'
+        GO  PACELL
+
+GM:     KEY 'AC=GM'
+        GO  PACELL
+
+SG:     KEY 'AC=SWGRAT'
+        GO  PACELL
+
+VT:     KEY 'AC=VENT'
+        GO  PACELL
+
+WT:     KEY 'AC=WT'
+        GO  PACELL
+
+WC:     KEY 'AC=WC'
+        GO  PACELL
+
+PACELL: CMD PACELL
+        PNT A1,A2,A3,1
+        GO  CODE
+
+;---------------------------------- TIE MARK ----------------------------------
+TM:     TST C9 EQ '',CODE                        ; Tie mark description
+        TST MSG NE C5,CODE                       ; If TM not first code skip
+        SET A0=45+A9
+        SET KEY='AA='+A0
+        KEY
+        KEY 'LV=28'                              ; Description level
+        KEY 'LC=0'                               ; Text symbology
+        KEY 'WT=0'
+        KEY 'CO=7'
+        SET A11=-0.7*C15                         ; Text offset
+        SET A11=A11*A10
+        SCS A4 A5 A0
+        SET A4=A4*A11
+        SET A5=A5*A11
+        SET A6=A1-A4
+        SET A7=A2+A5
+        CMD TXJS2
+        CMD PTEXT
+        SET KEY=' '+C9
+        KEY
+        PNT A6,A7,A3,1
+        GO  CODE
+
+;---------------------------- CHAINAGE CENTRELINE -----------------------------
+PLCCHG: SET R13=1                                ; Set centreline ON
+        TST R18 EQ 0,CHG2D                       ; If first chainage skip test
+        TST C0 NE C10,NXTSTR                     ; If different line skip
+
+CHG2D:  TST NDICES EQ 3,CHG3D
+        SET A1=TX.ORG(1)
+        SET A2=TX.ORG(2)
+        SET A3=0
+        GO  CHGTST
+
+CHG3D:  SET A1=TX.OG3(1)
+        SET A2=TX.OG3(2)
+        SET A3=TX.OG3(3)
+        GO  CHGTST
+
+CHGTST: SET XYZLEV=63                            ; Move processed code to lv=63
+        WRT CUREBL,CUREBY
+        TST C1 EQ 'AP',PGAN
+        TST C1 EQ 'LP',PGLN
+        TST C1 EQ 'CP',PGCL
+
+PGAN:   SET MSG='PEG ANGLE'
+        GO  PEG
+
+PGLN:   SET MSG='PEG'
+        GO  PEG
+
+PGCL:   SET MSG='CENTRE PEG'
+        GO  PEG
+
+PEG:    CMD NULCMD
+        SET A15=0.25*C15
+        SET A15=A15*A10                          ; Circle size
+        TST R18 EQ 0,PEG1                        ; Check if first Peg
+        GO  PEG2
+
+PEG1:   SET I0=0
+        TST C12 EQ '',PEGTXT
+        SET A0=C12
+        SET I0=A0*C15
+        GO  PEGTXT
+
+PEG2:   SET I1=A1-I4
+        SET I2=A2-I5
+        SET A4=I1*I1
+        SET A5=I2*I2
+        SET A0=A4+A5
+        SQR A0 A0                                ; Distance
+        TST A0 EQ 0,NXTCL
+        SET A4=I1/A0
+        SET A5=I2/A0
+        ATN A4 A4 A5                             ; Bearing
+        SET A5=A14-A4
+        SET A5=A5*A5
+        SQR A5 A5                                ; Abs value
+
+        TST R18 EQ 1,NODEF
+        TST A5 LT 180,OKBRG
+        SET A5=360-A5
+
+OKBRG:  TST A5 LT 0.0167,NODEF                   ; If less than 0^01' no defln.
+        CMD NULCMD
+        KEY 'LV=24'                              ; Defln. info level
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=5'
+        CMD TXJS1
+        SET A11=A10*0.4                          ; Text size
+        SET KEY='TX='+A11
+        KEY
+
+        SCS A6 A7 A14
+        SET A6=A6*A15
+        SET A7=A7*A15
+        SET A6=I4+A6
+        SET A7=I5+A7
+        CMD PLINE
+        PNT A6,A7,I6,1
+
+        SET A6=A6-I4
+        SET A7=A7-I5
+        SET A6=A6*20                             ; Defln. line length
+        SET A7=A7*20
+        SET A6=I4+A6
+        SET A7=I5+A7
+        PNT A6,A7,I6,1
+
+        SET A14=90-A14
+        SET KEY='AA='+A14
+        KEY
+        CMD PTEXT
+        SET I10=A5                               ; Defln Angle
+        SET C10=' '+I10
+        SET C10=C10+'^ '
+        SET A5=A5-I10
+        SET A5=A5*60
+        SET I10=A5
+        TST I10 GE 10,MINOK
+        SET C10=C10+'0'
+
+MINOK:  SET C10=C10+I10
+        SET C10=C10+'@47'
+        SET C10=C10+' '
+        SET A5=A5-I10
+        SET A5=A5*60
+        SET I10=A5
+        TST I10 GE 10,SECOK
+        SET C10=C10+'0'
+
+SECOK:  SET C10=C10+I10
+        SET C10=C10+'"'
+        KEY C10
+        PNT A6,A7,I6,1
+
+NODEF:  CMD NULCMD
+        KEY 'LV=27'                              ; Centreline line level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=6'
+        SET WWSECT=DFSECT
+        SET WWBYTE=DFBYTE
+        SET A14=A4
+        CMD PLINE
+        SET I0=I0+A0                             ; Chainage (I0) mm
+        SET C10=A0
+        TST A0 EQ 0,NXTCL
+        SET A0=A15/A0
+        SET I1=I1*A0
+        SET I2=I2*A0
+        SET A4=I4+I1
+        SET A5=I5+I2
+        PNT A4,A5,I6,1
+
+        SET A4=A1-I1
+        SET A5=A2-I2
+        PNT A4,A5,I6,1
+
+        KEY 'LV=26'                              ; Distance text level
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=5'
+        SET A0=0.5*A10
+        SET KEY='TX='+A0
+        KEY
+        SET A0=0.5*A10
+        SET KEY='LS='+A0
+        KEY
+        CMD TXJS6
+
+        KEY 'PLACE TEXT BELOW'
+        SET A4=A1+I4
+        SET A4=A4/2
+        SET A5=A2+I5
+        SET A5=A5/2
+        SET A0=C10/C15  
+        SET A0=A0+0.0501                         ; Roundoff to 0.1
+        SET C10=A0
+        SET N10=N10-3
+        KEY C10
+        PNT A4,A5,,1
+        PNT
+
+        CMD NULCMD                               ; Calc bearing of C/L
+        KEY 'LV=23'                              ; Bearing text level
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=5'
+        SET A0=0.7*A10                           ; Bearing text size
+        SET KEY='TX='+A0
+        KEY
+        CMD TXJS8
+
+        SET I1=A1-I4
+        SET I2=A2-I5
+        TST I0 EQ 0,NXTCL
+        SET A0=I1/I0                             ; Sin
+        SET A11=I2/I0                            ; Cos
+        ATN A0 A0 A11
+
+        KEY 'PLACE TEXT ABOVE'
+        SET A0=A0+0.0001389                      ; Add 0.5"
+        SET I10=A0                               ; Bearing
+        SET C10=' '+I10
+        SET C10=C10+'^ '
+        SET A0=A0-I10
+        SET A0=A0*60
+        SET I10=A0
+
+        TST I10 GE 10,OKM
+        SET C10=C10+'0'
+
+OKM:    SET C10=C10+I10
+        SET C10=C10+'@047 '
+        SET A0=A0-I10
+        SET A0=A0*60
+        SET I10=A0
+        TST I10 GE 10,OKS
+        SET C10=C10+'0'
+
+OKS:    SET C10=C10+I10
+        SET C10=C10+'"'
+
+        KEY C10
+        PNT A4,A5,,1
+        PNT
+
+PEGTXT: SET I4=A1
+        SET I5=A2
+        SET I6=A3
+        SET R18=R18+1
+        SET A0=45+A9
+        SET KEY='AA='+A0
+        KEY
+        SET A11=A10*C15                          ; Text offset
+        SET A11=A11*-1
+        SCS A4 A5 A0
+        SET A4=A4*A11
+        SET A5=A5*A11
+
+        KEY 'LV=27'                              ; Centreline circle level
+        KEY 'WT=3'
+        KEY 'LC=0'
+        KEY 'CO=6'
+        CMD PCIRR
+        SET A15=A15/C15
+        KEY A15
+        PNT A1,A2,A3,1
+
+        CMD NULCMD
+        KEY 'LV=22'                              ; Height text level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=4'
+        SET A0=0.7*A10
+        SET KEY='TX='+A0
+        KEY
+        CMD TXJS2
+        CMD PTEXT
+        SET A0=C3
+        SET A6=1
+        TST A0 GE 0,TSTDPT
+        SET A6=-1
+
+TSTDPT: TST R19 EQ 0,DPT0
+        TST R19 EQ 1,DPT1
+        TST R19 EQ 2,DPT2
+        TST R19 EQ 3,DPT3
+        GO  SETDPT
+
+DPT0:   SET A6=0.5*A6
+        GO  SETDPT
+
+DPT1:   SET A6=0.05*A6
+        GO  SETDPT
+
+DPT2:   SET A6=0.005*A6
+        GO  SETDPT
+
+DPT3:   SET A6=0.0005*A6
+
+SETDPT: SET A0=A0+A6
+        SET C10=A0
+        SET R16=4-R19
+        SET N10=N10-R16
+        SET I1=A5*-5                             ; Text dist constant
+        SET I2=A4*-5
+        SET I1=A1+I1
+        SET I2=A2+I2
+        SET KEY='HT. '+C10                       ; Height
+        KEY
+        PNT I1,I2,A3,1
+
+        CMD NULCMD
+        KEY 'LV=25'                              ; Chainage text level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=4'
+        CMD PTEXT
+        SET A6=I1+A4
+        SET A7=I2-A5
+        SET A0=I0/C15 
+        SET A0=A0+0.05
+        SET C10=A0
+        SET N10=N10-3
+        SET KEY='CH. '+C10                       ; Chainage
+        KEY
+        PNT A6,A7,A3,1
+
+        CMD NULCMD
+        KEY 'LV=21'                              ; Peg text level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=4'
+        CMD PTEXT
+        SET A4=A6+A4
+        SET A5=A7-A5
+        KEY MSG                                  ; Peg description
+        PNT A4,A5,A3,1
+
+NXTCL:  SET C10=C0
+        GO  NXTSTR
+
+;------------------------------- SEWER CENTRELINE -----------------------------
+PLCSMH: SET R13=1                                ; Set centreline ON
+        TST R18 EQ 0,SMH2D                       ; If first MH skip test
+        TST C0 NE C10,NXTSTR                     ; If different line skip
+
+SMH2D:  TST NDICES EQ 3,SMH3D
+        SET A1=TX.ORG(1)
+        SET A2=TX.ORG(2)
+        SET A3=0
+        GO  SMH
+
+SMH3D:  SET A1=TX.OG3(1)
+        SET A2=TX.OG3(2)
+        SET A3=TX.OG3(3)
+        GO  SMH
+
+SMH:    CMD NULCMD
+        SET XYZLEV=63                            ; Move processed code to lv=63
+        WRT CUREBL,CUREBY
+        SET A15=0.3*C15
+        SET A15=A15*A10                          ; Circle size
+        TST R18 EQ 0,SMTXT                       ; Check if first MH
+
+        SET I1=A1-I4
+        SET I2=A2-I5
+        SET A4=I1*I1
+        SET A5=I2*I2
+        SET A0=A4+A5
+        SQR A0 A0                                ; Distance
+
+        KEY 'LV=27'                              ; Centreline line level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=6'
+        SET WWSECT=DFSECT
+        SET WWBYTE=DFBYTE
+        SET A14=A4
+        CMD PLINE
+        SET I0=A0
+        TST A0 EQ 0,NXTCL2
+        SET A0=A15/A0
+        SET I1=I1*A0
+        SET I2=I2*A0
+        SET A4=I4+I1
+        SET A5=I5+I2
+        PNT A4,A5,I6,1
+              
+        SET A4=A1-I1
+        SET A5=A2-I2
+        PNT A4,A5,I6,1
+
+        KEY 'LV=26'                              ; Distance text level
+        KEY 'WT=1'
+        KEY 'LC=0'
+        KEY 'CO=5'
+        SET A0=0.5*A10                           ; Distance text size
+        SET KEY='TX='+A0
+        KEY
+        SET A0=0.5*A10
+        SET KEY='LS='+A0
+        KEY
+        CMD TXJS8
+
+        KEY 'PLACE TEXT ABOVE'
+        SET A4=A1+I4
+        SET A4=A4/2
+        SET A5=A2+I5
+        SET A5=A5/2
+        SET A0=I0/C15  
+        SET A0=A0+0.0501                         ; Roundoff to 0.1
+        SET C10=A0
+        SET N10=N10-3
+        KEY C10
+        PNT A4,A5,,1
+        PNT
+
+        CMD NULCMD                               ; Calc bearing of C/L
+        KEY 'LV=23'                              ; Bearing text level
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=5'
+        SET A0=0.7*A10                           ; Bearing text size
+        SET KEY='TX='+A0
+        KEY
+        CMD TXJS6
+
+        SET I1=A1-I4
+        SET I2=A2-I5
+        TST I0 EQ 0,NXTCL2
+        SET A0=I1/I0                             ; Sin
+        SET A11=I2/I0                            ; Cos
+        ATN A0 A0 A11
+
+        KEY 'PLACE TEXT BELOW'
+        SET A0=A0+0.0001389                      ; Add 0.5"
+        SET I10=A0                               ; Bearing
+        SET C10=' '+I10
+        SET C10=C10+'^ '
+        SET A0=A0-I10
+        SET A0=A0*60
+        SET I10=A0
+        TST I10 GE 10,OKMINS
+        SET C10=C10+'0'
+
+OKMINS: SET C10=C10+I10
+        SET C10=C10+'@047 '
+        SET A0=A0-I10
+        SET A0=A0*60
+        SET I10=A0
+        TST I10 GE 10,OKSECS
+        SET C10=C10+'0'
+
+OKSECS: SET C10=C10+I10
+        SET C10=C10+'"'
+        KEY C10
+        PNT A4,A5,,1
+        PNT
+
+SMTXT:  SET I4=A1
+        SET I5=A2
+        SET I6=A3
+        SET R18=R18+1
+        SET A0=45+A9
+        SET KEY='AA='+A0
+        KEY
+        SET A11=A10*C15                          ; Text offset
+        SET A11=A11*-1
+        SCS A4 A5 A0
+        SET A4=A4*A11
+        SET A5=A5*A11
+
+        KEY 'LV=27'                              ; Centreline circle level
+        KEY 'WT=3'
+        KEY 'LC=0'
+        KEY 'CO=6'
+        CMD PCIRR
+        SET A15=A15/C15
+        KEY A15
+        PNT A1,A2,A3,1
+
+        CMD NULCMD
+        KEY 'LV=22'                              ; Height text level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=4'
+        SET A0=0.7*A10
+        SET KEY='TX='+A0
+        KEY
+        CMD TXJS2
+        CMD PTEXT
+        SET A0=C3
+        SET A6=1
+        TST A0 GE 0,TSTDEC
+        SET A6=-1
+
+TSTDEC: TST R19 EQ 0,DEC0
+        TST R19 EQ 1,DEC1
+        TST R19 EQ 2,DEC2
+        TST R19 EQ 3,DEC3
+        GO  SETDEC
+
+DEC0:   SET A6=0.5*A6
+        GO  SETDEC
+
+DEC1:   SET A6=0.05*A6
+        GO  SETDEC
+
+DEC2:   SET A6=0.005*A6
+        GO  SETDEC
+
+DEC3:   SET A6=0.0005*A6
+
+SETDEC: SET A0=A0+A6
+        SET C10=A0
+        SET R16=4-R19
+        SET N10=N10-R16
+        SET I1=A5*-5                             ; Text dist constant
+        SET I2=A4*-5
+        SET I1=A1+I1
+        SET I2=A2+I2
+        SET KEY='HT. '+C10                       ; Height
+        KEY
+        PNT I1,I2,A3,1
+
+        CMD NULCMD
+        KEY 'LV=25'                              ; MH text level
+        KEY 'WT=2'
+        KEY 'LC=0'
+        KEY 'CO=4'
+        CMD PTEXT
+        SET A6=I1+A4
+        SET A7=I2-A5
+        KEY C12                                  ; MH description
+        PNT A6,A7,A3,1
+
+NXTCL2: SET C10=C0
+        GO  NXTSTR
+
+;--------------------------------- TREE CODE ----------------------------------
+TREE:   SET C13=''
+        SET C14=''
+        SET C11=''
+
+        SET R10=R10+1                            ; Determine code type
+        TST R10 GT N9,ENDTXT
+        TST UCASC(R10) EQ ' ',TREE
+        TST UCASC(R10) EQ 'D',TSTCDE
+        TST UCASC(R10) EQ 'S',TSTCDE
+        TST UCASC(R10) EQ 'H',TSTCDE
+
+        TST UCASC(R10) EQ '0',BACK
+        TST UCASC(R10) EQ '1',BACK
+        TST UCASC(R10) EQ '2',BACK
+        TST UCASC(R10) EQ '3',BACK
+        TST UCASC(R10) EQ '4',BACK
+        TST UCASC(R10) EQ '5',BACK
+        TST UCASC(R10) EQ '6',BACK
+        TST UCASC(R10) EQ '7',BACK
+        TST UCASC(R10) EQ '8',BACK
+        TST UCASC(R10) EQ '9',BACK
+        TST UCASC(R10) EQ '.',BACK
+        GO  TRCODE
+
+BACK:   SET C11='BACK'
+        SET R10=R10-1
+        GO  TRCODE
+
+TSTCDE: SET C10=UCASC(R10)
+
+TRCODE: TST R10 GT N9,ENDTXT                     ; Read size
+        SET R10=R10+1
+        TST R10 GT N9,TEST1
+        TST UCASC(R10) EQ ' ',TRCODE
+
+        TST UCASC(R10) EQ '0',NUMBER
+        TST UCASC(R10) EQ '1',NUMBER
+        TST UCASC(R10) EQ '2',NUMBER
+        TST UCASC(R10) EQ '3',NUMBER
+        TST UCASC(R10) EQ '4',NUMBER
+        TST UCASC(R10) EQ '5',NUMBER
+        TST UCASC(R10) EQ '6',NUMBER
+        TST UCASC(R10) EQ '7',NUMBER
+        TST UCASC(R10) EQ '8',NUMBER
+        TST UCASC(R10) EQ '9',NUMBER
+        TST UCASC(R10) EQ '.',NUMBER
+
+TEST1:  TST C0 EQ '',DESC1
+        GO  ENDSIZ
+
+DESC1:  TST C11 EQ 'BACK',DESC
+        SET R10=R10-1
+        GO  DESC
+
+NUMBER: SET C0=C0+UCASC(R10)                     ; Size variable      
+        GO  TRCODE
+
+ENDSIZ: TST C11 EQ 'BACK',BKTREE
+        TST C10 EQ 'D',C12
+        TST C10 EQ 'S',C13
+        TST C10 EQ 'H',C14
+        GO  TSTCDE
+
+BKTREE: SET C10=UCASC(R10)
+        TST C10 EQ 'D',C12
+        TST C10 EQ 'S',C13
+        TST C10 EQ 'H',C14
+        GO  TRCODE
+
+C12:    SET C12=C0                               ; Diameter
+        SET C0=''
+        GO  TSTCDE
+
+C13:    SET C13=C0                               ; Spread
+        SET C0=''
+        GO  TSTCDE
+
+C14:    SET C14=C0                               ; Height
+        SET C0=''
+        GO  TSTCDE
+
+DESC:   TST R10 GT N9,TRDES
+        TST UCASC(R10) EQ '',TRDES
+        SET C0=C0+UCASC(R10)
+        SET R10=R10+1
+        GO  DESC
+
+TRDES:  SET C11=C0                               ; Tree Description
+        SET C0=''
+
+ENDTXT: CMD NULCMD 
+        KEY 'LV=36'
+        KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=2'
+        CMD TXJS2
+        SET A11=A10*0.35                         ; Text size
+        SET KEY='TX='+A11
+        KEY
+
+        TST C13 EQ '',NOSIZE
+        SET A0=C15/1000                          ; Cell UOR scale factor
+        SET A0=A0*C13
+        SET KEY='AS='+A0                         ; Set tree size
+        KEY
+
+        CMD PACELL
+        PNT A1,A2,A3,1
+
+        SET A0=C15/1000                          ; Cell UOR scale factor
+        SET A0=A0*A10
+        SET KEY='AS='+A0                         ; Reset Active Scale
+        KEY
+
+NOSIZE: CMD NULCMD
+        SET A0=45+A9
+        SET KEY='AA='+A0
+        KEY
+        SET A11=-0.7*C15                         ; Text offset
+        SET A11=A10*A11
+        SCS A4 A5 A0
+        SET A4=A4*A11
+        SET A5=A5*A11
+        SET A6=A1
+        SET A7=A2
+        CMD PTEXT
+
+        SET C10=' '
+
+        TST C12 EQ '',TRHT
+        SET C10=C10+C12
+        SET C10=C10+'D '
+
+TRHT:   TST C14 EQ '',TRSIZE
+        SET C10=C10+C14
+        SET C10=C10+'H '
+
+;        TST C13 EQ '',TRSIZE
+;        SET C10=C10+C13
+;        SET C10=C10+'S'
+
+TRSIZE: TST C10 EQ '',TRDESC
+        KEY C10
+        SET A6=A1-A4
+        SET A7=A2+A5
+        PNT A6,A7,A3,1
+
+TRDESC: TST C11 EQ '',PLDIA
+        SET A6=A6-A4
+        SET A7=A7+A5
+        SET C10=' '+C11
+        KEY C10                                  ; Tree Description
+        PNT A6,A7,A3,1
+
+PLDIA:  TST C12 EQ '',ENDCDE
+        CMD NULCMD
+        KEY 'LV=46'        
+        KEY 'LC=0'
+        KEY 'WT=0'
+        KEY 'CO=13'
+        CMD PCIRR
+        SET A15=C12/2
+        KEY A15
+        TST RELERR NE 0,ENDCDE
+        PNT A1,A2,A3,1
+
+;------------------ PLACE CROSS, HEIGHT, SHOT NO. & CODES ---------------------
+ENDCDE: CMD NULCMD
+        SET KEY='AA='+A9
+        KEY 
+        CMD TXJS2
+        SET A11=A10*0.25                         ; Text size
+        SET KEY='TX='+A11
+        KEY
+        SET C10=''
+
+        TST C5 EQ '',PLCDES
+        SET C10=' '+C10
+        SET C10=C10+C5
+
+        TST C6 EQ '',PLCDES
+        SET C10=C10+'+'
+        SET C10=C10+C6
+
+        TST C7 EQ '',PLCDES
+        SET C10=C10+'+'
+        SET C10=C10+C7
+
+        TST C8 EQ '',PLCDES
+        SET C10=C10+'+'
+        SET C10=C10+C8
+
+PLCDES: TST C9 EQ '',PLDESC
+        TST C5 EQ '',NOCODE
+        SET C10=C10+'+'
+
+NOCODE: SET C10=C10+'"'
+        SET C10=C10+C9
+        SET C10=C10+'"'
+
+PLDESC: TST C10 EQ '',SHNUM
+        CMD TXJS1
+        KEY 'LV=5'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=3'
+        CMD PTEXT                                ; Place shot description
+        KEY C10
+        PNT A1,A2,A3,1
+
+SHNUM:  TST C4 EQ '',SPOT
+        CMD NULCMD
+        SET KEY='AA='+A9
+        KEY 
+        KEY 'LV=6'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=4'
+        SET A11=A10*0.25
+        SET KEY='TX='+A11
+        KEY
+        SET C4=C4+' '
+        CMD TXJS13
+        CMD PTEXT                                ; Place shot no.
+        KEY C4
+        PNT A1,A2,A3,1        
+
+SPOT:   CMD PPTLST                               ; Place spot
+        KEY 'LV=2'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'CO=2'
+        SET A8=A9
+        SET R20=0
+
+SPCODE: SET R20=R20+1                            ; Test for special codes
+        TST R20 EQ 1,CDE1
+        TST R20 EQ 2,CDE2
+        TST R20 EQ 3,CDE3
+        TST R20 EQ 4,CDE4
+        GO  TSTANG
+
+CDE1:   SET C0=C5
+        GO  CDETST
+
+CDE2:   SET C0=C6
+        GO  CDETST
+
+CDE3:   SET C0=C7
+        GO  CDETST
+
+CDE4:   SET C0=C8
+
+CDETST: TST C0 EQ '',SPCODE
+        SET UCASC=C0
+        SET R10=0
+        SET C10=''
+        SET C1=''
+
+SPTEST: SET R10=R10+1
+        TST R10 GT N0,TSTSP
+        TST UCASC(R10) EQ '0',SPTEST
+        TST UCASC(R10) EQ '1',SPTEST
+        TST UCASC(R10) EQ '2',SPTEST
+        TST UCASC(R10) EQ '3',SPTEST
+        TST UCASC(R10) EQ '4',SPTEST
+        TST UCASC(R10) EQ '5',SPTEST
+        TST UCASC(R10) EQ '6',SPTEST
+        TST UCASC(R10) EQ '7',SPTEST
+        TST UCASC(R10) EQ '8',SPTEST
+        TST UCASC(R10) EQ '9',SPTEST
+        TST UCASC(R10) EQ '-',SPTEST
+        TST R10 GT 2,SPCDE2
+        SET C1=C1+UCASC(R10)                     ; Code 1
+        GO  SPTEST
+
+SPCDE2: SET C10=C10+UCASC(R10)                   ; Code 2
+        GO  SPTEST
+
+TSTSP:  TST C1 EQ 'NP',NEXT                      ; Test for special codes
+        TST C1 EQ 'NC',LEV3
+        TST C1 EQ 'NL',LEV4
+        TST C1 EQ 'UG',LEV4
+        TST C1 EQ 'IN',LEV34
+        TST C1 EQ 'OB',LEV34
+
+        TST C10 EQ 'NP',NEXT
+        TST C10 EQ 'NC',LEV3
+        ;TST C10 EQ 'FL',LEV3 Floor Level same as NC
+        TST C10 EQ 'FL',LEV14                     ; KD
+        TST C10 EQ 'NL',LEV4
+        TST C10 EQ 'UG',LEV4
+        TST C10 EQ 'IN',LEV34
+        TST C10 EQ 'OB',LEV34
+        GO  SPCODE
+
+LEV3:   KEY 'LV=3'
+        KEY 'CO=0'
+        GO  TSTANG
+
+LEV14:  KEY 'LV=14'      ;thise block added by KD 4.9.95
+        KEY 'CO=0'
+        KEY 'WT=1'
+        GO  TSTANG
+
+LEV4:   KEY 'LV=4'
+        KEY 'CO=0'
+        GO  TSTANG
+
+LEV34:  KEY 'LV=34'
+        KEY 'CO=7'
+
+TSTANG: TST A8 GT 90,OVER                        ; Angle between 0 - 90
+        TST A8 LT 0,UNDER
+        GO  OKANG
+
+OVER:   SET A8=A8-90
+        GO  TSTANG
+
+UNDER:  SET A8=A8+90
+        GO  TSTANG
+
+OKANG:  SET A11=0.125*C15                        ; Spot size
+        SET A11=A11*A10
+        SCS A12 A13 A9
+        SET A12=A12*A11
+        SET A13=A13*A11
+
+        SET A11=A1+A13
+        SET A4=A2+A12
+        PNT A11,A4,A3
+
+        SET A11=A1-A13
+        SET A4=A2-A12
+        PNT A11,A4,A3
+
+        PNT A1,A2,A3
+
+        SET A11=A1-A12
+        SET A4=A2+A13
+        PNT A11,A4,A3
+
+        SET A11=A1+A12
+        SET A4=A2-A13
+        PNT A11,A4,A3
+        RST
+
+        TST ACTLEV NE 2,HTLEV
+        KEY 'LV=1'
+        KEY 'CO=2'
+
+HTLEV:  SET A0=45+A9
+        SET KEY='AA='+A0
+        KEY
+        KEY 'WT=0'
+        KEY 'LC=0'
+        ; KD changed to smaller size for RLs SET A11=A10*0.5
+        SET A11=A10*0.35
+        SET KEY='TX='+A11
+        KEY
+
+        SET R14=DFSECT
+        SET R15=DFBYTE
+        CMD TXJS2
+        CMD PTEXT                                ; Place height data field
+        KEY '________'
+        PNT A1,A2,A3,1        
+
+        RED R14,R15                              ; Write height
+        SET A0=C3
+        SET A6=1
+        TST A0 GE 0,TSTDP
+        SET A6=-1
+
+TSTDP:  TST R19 EQ 0,DP0
+        TST R19 EQ 1,DP1
+        TST R19 EQ 2,DP2
+        TST R19 EQ 3,DP3
+        GO  SETDP
+
+DP0:    SET A6=0.50001*A6
+        GO  SETDP
+
+DP1:    SET A6=0.05001*A6
+        GO  SETDP
+
+DP2:    SET A6=0.00501*A6
+        GO  SETDP
+
+DP3:    SET A6=0.00051*A6
+
+SETDP:  SET A0=A0+A6
+        SET C0=' '+A0
+        SET R16=4-R19
+        SET N0=N0-R16
+        SET UCASC=C0
+        SET R10=0
+
+HT:     TST NDICES EQ 2,HT2D
+        SET R10=R10+1
+        TST R10 GT N0,WRTHT
+        SET TX.LT3(R10)=UCBYT(R10)
+        GO  HT
+
+HT2D:   SET R10=R10+1
+        TST R10 GT N0,WRTHT
+        SET TX.LET(R10)=UCBYT(R10)
+        GO  HT2D
+
+WRTHT:  WRT CUREBL,CUREBY
+
+        SET I11=R30-R0
+        SET I11=I11*512
+        SET I15=R31-R1
+        SET I11=I11+I15
+        SET I11=I13-I11
+        SET I11=I11*10
+        TST I11 LT I12,NEXT
+        SET I14=I14+10
+
+        SET MSG='PRProcessing '+I14
+        SET MSG=MSG+'% completed'
+        MSG MSG
+        SET I12=I12+I13
+        GO  NEXT
+
+;------------------------------- ERROR MESSAGES -------------------------------
+FILERR: MSG 'PRCheck if AMG or ISG seed file required'
+        MSG 'ERERROR: Co-ordinates off design plane' 
+        GO  EXUC
+
+QUIT:   MSG 'MS'
+        MSG 'PR'
+        MSG 'ER'
+        CMD NULCMD
+        KEY 'ECHO'
+        GO  END
+
+;---------------------------------- EXIT UCM ----------------------------------
+EXIT:   MSG 'PRProcessing 100% completed'
+        MSG 'CF'
+        GO  EXUC
+
+EXITUC: TST R29 EQ 0,EXUC
+        SET MSG='ERFATAL ERROR: Line '+R29
+        MSG MSG
+        SET ERR=0
+
+EXUC:   SET R0=R22
+        SET R1=R23
+
+DEL:    RED R0,R1
+        TST CUREBL LT R30,ERASE                  ; Test for end text
+        TST CUREBL GT R30,DELSTR
+        TST CUREBY GE R31,DELSTR
+
+ERASE:  SET R0=ELEBLK
+        SET R1=ELECNT
+
+        TST UELETY EQ 255,DELSTR                 ; Test if past end of file
+
+        SET DGNBUF(1)=DGNBUF(1) ! 32768          ; Delete text
+        WRT CUREBL,CUREBY
+        GO  DEL
+
+DELSTR: TST R8 NE 1,UPDATE
+        SET R0=R30                               ; Delete string text
+        SET R1=R31
+        SET R30=R26
+        SET R31=R27
+        SET R8=0
+        GO  DEL
+
+UPDATE: MSG 'CFCompressing File....'
+        KEY 'COMPRESS DESIGN'
+        MSG 'CFUpdating View(s)....'
+        CMD NULCMD
+        KEY 'AA=0'
+        KEY 'AS=1'
+
+        KEY 'SET TEXT ON'                        ; Set fast text off
+        PNT ,,,1
+        PNT ,,,2
+        PNT ,,,3
+        PNT ,,,4
+        PNT ,,,5
+        PNT ,,,6
+        PNT ,,,7
+        PNT ,,,8
+
+        SET TPSMDE=1                             ; Set azimuth mode
+        CMD FIT1
+        PNT ,,,1
+        CMD FIT2
+        PNT ,,,5
+        CMD FILDGN
+
+        SET WWSECT=4
+        SET WWBYTE=0
+        KEY 'BEEP'
+        KEY 'BEEP'
+        KEY 'BEEP'
+        CMD NULCMD
+        SET A0=0.5*A10                           ; Set LS
+        SET KEY='LS='+A0
+        KEY
+        KEY 'ECHO'
+        SET MSG='MSPoints processed='+R12
+        MSG MSG
+
+END:    MSG 'CFTopcode Exited'
+        MSG 'ST'
+        END

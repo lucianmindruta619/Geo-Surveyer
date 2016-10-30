@@ -1,0 +1,150 @@
+999
+FBX PSUTool (*.DXF) exporter
+  0
+SECTION
+  2
+HEADER
+  9
+$ACADVER
+  1
+AC1008
+  9
+$UCSORG
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+  9
+$UCSXDIR
+ 10
+1.0
+ 20
+0.0
+ 30
+0.0
+  9
+$TILEMODE
+ 70
+   1
+  9
+$UCSYDIR
+ 10
+0.0
+ 20
+1.0
+ 30
+0.0
+  0
+ENDSEC
+  0
+SECTION
+  2
+TABLES
+  0
+TABLE
+  2
+LTYPE
+ 70
+   1
+  0
+LTYPE
+  2
+CONTINUOUS
+ 70
+   64
+  3
+Solid line
+ 72
+   65
+ 73
+   0
+ 40
+0.0
+  0
+ENDTAB
+  0
+TABLE
+  2
+LAYER
+ 70
+   {{#contour_lines}}{{length}}{{/contour_lines}}
+  0
+LAYER
+  2
+Mesh
+ 70
+   0
+ 62
+   7
+  6
+CONTINUOUS
+{{#contour_lines}}{{#lines}}  0
+LAYER
+  2
+Mesh_ncl1_{{index}}
+ 70
+   0
+ 62
+   {{colour_code}}
+  6
+CONTINUOUS{{/lines}}{{/contour_lines}}
+  0
+ENDTAB
+  0
+ENDSEC
+  0
+SECTION
+  2
+BLOCKS
+  0
+ENDSEC
+  0
+SECTION
+  2
+ENTITIES
+{{#contour_lines}}{{#lines}}  0
+POLYLINE
+  8
+Mesh_ncl1_{{index}}
+ 62
+   {{colour_code}}
+ 66
+   1
+ 10
+0.0
+ 20
+0.0
+ 30
+0.0
+ 70
+   64
+ 71
+   3
+ 72
+   1
+{{#points}}  0
+VERTEX
+  8
+Mesh_ncl1_{{contour_index}}
+ 10
+{{x}}
+ 20
+{{y}}
+ 30
+{{z}}
+ 70
+   {{end_code_70}}{{/points}}
+ 71
+   3
+ 72
+   2
+ 73
+   1
+  0
+SEQEND{{/lines}}{{/contour_lines}}
+  0
+ENDSEC
+  0
+EOF

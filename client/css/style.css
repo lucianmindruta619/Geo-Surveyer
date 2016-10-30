@@ -1,0 +1,313 @@
+body {
+    background-color: #fefffe;
+    margin: 0px;
+    overflow: hidden;
+    font-family: ArchitectsDaughter, Arial;
+    font-size: 14px;
+}
+
+#ui {
+    border-bottom-right-radius: 5px;
+    background-color: #fff;
+    border: 1px solid silver;
+    opacity: 0.75;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: #333;
+    padding: 0.25em 2em;
+    width: 200px;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+#ui-top {
+    background-color: #fff;
+}
+
+#ui-top h1, #point_data h1 {
+    margin-top: 0px;
+    margin-bottom: 0.25em;
+}
+
+#ui-top h3 {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+.ui-inner {
+    position: relative;
+}
+
+#point_data {
+    border-bottom-left-radius: 5px;
+    background-color: #fff;
+    border: 1px solid silver;
+    opacity: 0.75;
+    height: auto;
+    position: absolute;
+    max-height: 100%; 
+    top: 0px;
+    right: 0px;
+    color: #333;
+    padding: 0.25em 2em;
+    overflow: auto;
+    width: 250px;
+    overflow-y: scroll;
+    overflow: -moz-scrollbars-vertical;
+    max-width: 20%;
+}
+#osd {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0px;
+    left: 0px;
+}
+#spinner {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    background: url('../img/spinner.gif') 50% 50% no-repeat #ede9df;
+}
+#togglebox  {
+    margin-left: 300px;
+    width: 400px;
+    height: 1.5em;
+    background-color: #fff;
+    border: 1px solid silver;
+    opacity: 0.75;
+    padding: 5px;
+}
+#camerabox  {
+    position: fixed;
+    margin-left: 720px;
+    width: auto;
+    height: 1.5em;
+    background-color: #fff;
+    border: 1px solid silver;
+    opacity: 0.75;
+    top: 0px;
+    padding: 5px;
+}
+.point_descriptor {
+    font-size: 0.75em;
+}
+
+.ui-button {
+    
+}
+
+.display_block{
+    display: block;
+}
+
+#dxfloading {
+    background: url('../img/spinner.gif') no-repeat center;
+    width: 2em;
+    height: 1em;
+}
+
+.highlight {
+     color: red;
+}
+.yellow {
+     color: yellow;
+}
+.minimise {
+    float: right;
+    font-weight: bold;
+    min-width: 2em;
+    padding-bottom: 0.25em !important;
+}
+
+/* Progresbar */
+#progressBar {
+    border: 1px solid #111;
+    
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    
+    background-color: #292929;
+    display: none;
+    height: 15px;
+    width: 200px;
+    margin-bottom: 2em;
+}
+ 
+#progressBar div.indicator {
+    background-color: #0099ff;
+    
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    
+    color: #fff;
+    height: 100%;
+    line-height: 22px;
+    text-align: right;
+    width: 0;
+}
+
+
+/* Survey List Block */
+div#survey-list-block {
+    font-family: sans-serif;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+    padding-top: 0.25em;
+    border-top: 1px dashed silver;
+}
+
+div#survey-list-block a {
+    text-decoration: none;
+}
+
+div#survey-list-block .survey-list .list {
+    display: none;
+}
+
+div#survey-list-block .survey-list .list .filters {
+    margin-bottom: 7px
+}
+
+div#survey-list-block .survey-list .list .filters input {
+    border: 1px solid #595757;
+    font-size: 1.1em;
+    padding: 4px;
+    width: 50%;
+}
+
+div#survey-list-block .survey-list .list .surveys {
+    margin: 5px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+div#survey-list-block .survey-list .list .loading-spinner {
+    margin: auto 50%;
+}
+
+div#survey-list-block .survey-list .list a.survey {
+    display: block;
+    padding: 2px 0;
+    font-size: 1.15em;
+    color: #03c;
+}
+
+div#survey-list-block .survey-list .list a.survey:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+div#survey-list-block .survey-list .list a.survey:hover {
+    background-color: #D1F0FF;
+}
+
+div#survey-list-block button#close_surveys {
+	display: none;
+}
+
+#survey-list-block button {
+	float: right;
+}
+
+/* settings dialog */
+.ui-dialog div {
+    font-family: ArchitectsDaughter, Arial;
+}
+
+.ui-button-text {
+    font-family: ArchitectsDaughter, Arial;
+}
+
+.ui-dialog-titlebar {
+    display: none;
+}
+
+.json-editor {
+    font-size: 0.75em;
+}
+
+#toolbuttons {
+    text-align: center;
+}
+
+button.fa {
+    width: 4em;
+    padding: 0.25em;
+}
+
+#points_menu_box {
+    z-index:4;
+    position:absolute;
+}
+
+.server-error {
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1em;
+}
+
+#export-dialog {
+	display: none;
+}
+
+.hide {
+	display: none;
+}
+
+/* Error console related styles - Start */
+#console {
+    max-width: 50%;
+    width: 1024px;
+    height: auto;
+    background-color: #fff;
+    border: 1px solid silver;
+    opacity: 0.75;
+    padding: 5px;
+    position: fixed; 
+    bottom: 0px; 
+    margin-left: 300px; 
+}
+
+#console-spinner { display: none; margin-left: 1em; }
+
+#error-console-header { width: 100%; height: 1em; cursor: pointer; padding-bottom: 5px; font-weight: bold; }
+
+#error-console { word-wrap: break-word; }
+
+#error-console { font-size: 12px; }
+
+#error-console div.jquery-console-inner { 
+	width: 100%; 
+	height: 200px; 
+	background: #333;
+ 	overflow: auto; 
+}
+
+#error-console div.jquery-console-prompt-box { color: #fff; font-family: monospace; }
+
+#error-console div.jquery-console-focus span.jquery-console-cursor { background: #fefefe; color: #333; font-weight: bold }
+
+#error-console div.jquery-console-message-error { color: #ef0505; font-family: sans-serif; font-weight: bold; padding: 0.1em; }
+
+#error-console div.jquery-console-message-value { color: #1ad027; font-family: monospace; padding: 0.1em; }
+
+#error-console div.jquery-console-message-type { color: #52666f; font-family: monospace; padding: 0.1em; }
+
+#error-console span.jquery-console-prompt-label { font-weight: bold }
+
+.error-red { color: #fff; font-weight: bold; border-radius:50%; background-color: #f00; padding-left: 8px; padding-right: 8px; text-align: center; }
+
+#error-console-header-caption { float: left; }
+
+#error-msg-count { float: right; margin-right: 5px; }
+
+/* Error console related styles - End */
+

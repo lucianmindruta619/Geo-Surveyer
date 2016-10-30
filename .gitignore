@@ -1,0 +1,10 @@
+.*.swp
+*.pyc
+.project
+.pydevproject
+dev.sq3
+server/PSUTool/media/uploaded
+server/PSUTool/media/global-settings.json
+server/PSUTool/settings_local.py
+server/virtualenv
+deploy/password

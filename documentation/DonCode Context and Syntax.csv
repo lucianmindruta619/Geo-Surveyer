@@ -1,0 +1,151 @@
+Field Code,Cell File Name,Code Description,Code Type,explination notes / comments,Auto Add Function Code,,Draw Cross Hair on Point,Cross Hair MS Properties,,Add Text Label to Point,Text Label MS Properties,,Add # Comment,,Add String ID after Text Label,MS Properties,,Insert Point Height Value on Point,Height Value label MS Properties,,,String Draw Properties,MS Properties,,Object Draw Type,CAD LAYERS
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+NS,NS.dwg,Natural Surface,object,,,,y,2,,NS,5,,,,y,5,,y,1,,,,,,NA,NATURAL_SURFACE
+HY,HY.dwg,Hydrant,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_WATER_HYDRANT
+HR,HR.dwg,Hydrant Recycled,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_WATER_HYDRANT
+SV,SV.dwg,Stop Valve,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_STOP_VALVE
+SR,SR.dwg,Stop Valve Recycled,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_STOP_VALVE
+TA,TA.dwg,Tap,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_TAP
+WRME,WRME.dwg,Water Meter,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_WATER_METER
+TG,TG.dwg,Water Tags,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_WATER_TAG
+PG,PG.dwg,Peg,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_PEG
+SK,SK.dwg,Stake,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_STAKE
+NA,NA.dwg,Nail,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_PEG
+BM,BM.dwg,Bench Mark #REV#,object,,NC,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_BM
+DH,DH.dwg,Drill Hole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_DH&W
+SS,SSM.dwg,State Survey Mark,object,,NC,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_PM_SSM
+BH,BH.dwg,Bore Hole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,STRUCTURE_BOREHOLE
+PM,PM.dwg,Permanent Mark #REV#,object,,NC,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_PM_SSM
+RM,RM.dwg,Reference Mark,object,,NC,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_REFERENCE_MARK
+ST,ST.dwg,Station,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SURVEY_STATION
+GM,GM.dwg,Gas Main,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,GAS_METER
+GSME,GSME.dwg,Gas Meter,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,GAS_METER
+GSPT,GSPT.dwg,Gas Pit,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,NA,GAS_PIT
+TCPT,TCPT.dwg,Telecom Pit,"object,string",,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point if Points =1,TELECOMMS_PIT
+TCPO,TCPO.dwg,Telecom pole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,NA,TELECOMMS_POST
+SWMH,SWMH.dwg,Stormwater Manhole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,DRAINAGE_STORM_WATER
+GP,GP.dwg,Gully Pit,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,DRAINAGE_GULLY_PIT
+SG,SG.dwg,Stormwater Grate,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,DRAINAGE_STORM_WATER
+SM,SM.dwg,Sewer Manhole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SEWER_MANHOLE
+IL,IL.dwg,Sewer Inspection Lid,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SEWER_MANHOLE
+LH,LH.dwg,Lamphole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SEWER_LAMP_HOLE
+VT,VT.dwg,Sewer Vent,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,SEWER_VENT
+UB,UB.dwg,Electricity Box,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,ELECTRICITY_BOX
+TF,TF.dwg,Transformer,"object,string",,,,n,2,,TRANSFORMER,5,,,,y,5,,y,1,,,,,,Object Placement on Point if Points =1,ELECTRICITY_TRANSFORMER
+PO,PO.dwg,Pole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,STRUCTURE_MISC
+SI,SI.dwg,Sign,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,STRUCTURE_MISC
+BS,BS.dwg,Seat,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,NA,STRUCTURE_MISC
+HO,HO.dwg,Hoist,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,STRUCTURE_CLOTHES_HOIST
+ME,ME.dwg,Meter,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,NA,METER
+BU,BU.dwg,Bush,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,VEGETATION_EDGE_OF_SHRUB_GROUP
+SA,SA.dwg,Sapling,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,VEGETATION_TREE
+SU,SU.dwg,Shrub,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,VEGETATION_SHRUB
+LA,LA.dwg,Lawn and Grass,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,NA,VEGETATION_GRASS
+CE,CE.dwg,Electricity Conduit,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,ELECTRICITY_CABLE
+CW,CW.dwg,Water Condiuit,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_MAIN
+CT,CT.dwg,Telecom Conduit,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,TELECOMMS_CONDUIT
+CG,CG.dwg,Gas Conduit,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,GAS_CONDUIT
+C2,C2.dwg,Combined Elec and Tele,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,TEXT
+C3,C3.dwg,"Combined Elec, Tele and Water",object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,TEXT
+C4,C4.dwg,Combined Elec and Water,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,TEXT
+C5,C5.dwg,"Combined Elec, Tele and Gas",object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,TEXT
+EP,EP.dwg,Electricity Pole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,ELECTRICITY_POWER_POLE
+LP,LP.dwg,Light Pole,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,ELECTRICITY_LIGHT_POLE
+IP,IP.dwg,Inlet Pit,object,,,,n,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,WATER_SUPPLY_STORMWATER_PIT
+PT,PT.dwg,Junction Pit,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,JUNCTION_PIT
+KO,KO.dwg,Kerb Outlet,object,,,,y,2,,,5,,,,y,5,,y,1,,,,,,Object Placement on Point,TEXT
+FL,FL.dwg,Floor Level,object,,NC,,y,2,,FL,5,,,,y,5,,y,1,,,,,,NA,TEXT
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+UC01,,User Command 1,"object,string",just add point or draw string and add comment text,,,y,2,,#Text,5,,,,y,9,,y,5,,,,,,NA,User_Commands
+UC02,,User Command 2,"object,string",,,,y,2,,#Text,5,,,,y,9,,y,5,,,,,,NA,User_Commands
+TLE,,User Command 3,"object,string",,,,y,2,,#Text,5,,,,y,9,,y,5,,,,,,NA,User_Commands
+UC++++,,User Command - can be infinate,"object,string",,,,y,2,,#Text,5,,,,y,9,,y,5,,,,,,NA,User_Commands
+UC,,User Command,"object,string",,,,y,2,,#Text,5,,,,y,9,,y,5,,,,,,NA,User_Commands
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+TR,TR.dwg,Tree,"object,function",scale object to # values,,,n,2,,,5,,,,y,5,,y,1,,,,,,Cell Placement on Point & Scale,VEGETATION_TREE
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+RO,,Rock,string,,,,y,2,,RO,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_WALL
+DD,,Dish Drain #STRING?#,string,,,,y,2,,DD,5,,,,y,5,,y,1,,,,,,Texture String with tile,DISH_DRAIN
+FF,,Fill,string,,,,y,1,,FF,4,,,,y,4,,y,0,,,String if > 1 Point Exists,45,,,FILL
+WM,,Water Main,string,,,,y,2,,WM,5,,,,y,5,,y,1,,,String if > 1 Point Exists,52,,,WATER_SUPPLY_MAIN
+WRPI,,Water Pipe,string,,,,y,2,,WRPI,5,,,,y,5,,y,1,,,String if > 1 Point Exists,52,,,WATER_SUPPLY_MAIN
+RD,,Road,string,,,,y,2,,RD,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_KERB_TOP
+VC,,Vehicle Crossing,string,,,,y,2,,VC,5,,,,y,5,,y,1,,,String if > 1 Point Exists,50,,,ROAD_KERB_TOP
+MC,,Pram Crossing,string,,,,y,2,,MC,5,,,,y,5,,y,1,,,String if > 1 Point Exists,50,,,ROAD_KERB_TOP
+EB,,Edge Bitumen,"breakline,string",,,,y,2,,EB,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_CONCRETE
+GSPI,,Gass Pipe,string,,,,y,2,,GSPI,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,GAS_PIPE
+PA,,Path,string,,,,y,2,,PA,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_CONCRETE
+DW,,Driveway,string,,,,y,2,,DW,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_CONCRETE
+PV,,Paving,string,,,,y,2,,PV,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_CONCRETE
+SR,,Step,string,,,,y,2,,SR,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,STRUCTURE_SUBJECT_BUILDING
+RP,,Ramp,string,,,,y,2,,RP,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,STRUCTURE_SUBJECT_BUILDING
+WL,,Water Level,string,,,,y,2,,WL,5,,,,y,5,,y,1,,,String if > 1 Point Exists,52,,,WATER_LEVEL
+TL,,Telecom Line,string,,,,y,2,,TL,5,,,,y,5,,y,1,,,String if > 1 Point Exists,53,,,TELECOMMS_CONDUIT
+EC,,Concrete Edge,string,,,,y,2,,EC,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_CONCRETE
+SB,,Concrete Slab,string,,,,y,2,,SB,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,ROAD_CONCRETE
+HDWL,,Headwall,string,,,,y,2,,HDWL,5,,,,y,5,,y,1,,,String if > 1 Point Exists,?,,,STRUCTURE_WALL
+PI,,pipe,string,,,,y,2,,PI,5,,,,y,5,,y,1,,,String if > 1 Point Exists,?,,,PIPE
+SL,,Sewer Line,string,,,,y,2,,SL,5,,,,y,5,,y,1,,,String if > 1 Point Exists,54,,,SEWER_MAIN
+WW,,Window,string,,NC,,y,2,,WW,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_WINDOW
+WS,,Window Sill,string,,NC,,y,2,,WS,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_WINDOW
+WH,,Window Head,string,,NC,,y,2,,WH,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_WINDOW
+SP,,Pool,string,,NC,,y,2,,SP,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_SUBJECT_BUILDING
+FL,,Floor Level,string,,NC,,y,2,,FL,5,,,,y,5,,y,1,,,,,,,TEXT
+PX,,Pergola,string,,,,y,2,,PX,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_SUBJECT_BUILDING
+VR,,Verandah,string,,,,y,2,,VR,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_SUBJECT_BUILDING
+DK,,Deck,string,,,,y,2,,DK,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_SUBJECT_BUILDING
+PH,,Porch,string,,NC,,y,2,,PH,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_SUBJECT_BUILDING
+DO,,Door,string,,NC,,y,2,,DO,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_DOOR
+EV,,Eave,string,,NC,,y,2,,EV,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_GUTTER_(ROOF)
+RG,,Ridge,string,,NC,,y,2,,EV,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,,STRUCTURE_GUTTER_(ROOF)
+EM,,Electricity Main,string,,,,y,2,,EM,5,,,,y,5,,y,1,,,String if Points > 1,55,,Cell Placement Along String,ELECTRICITY_CABLE
+GA,,Garden,string,,,,y,2,,GA,5,,,,y,5,,y,1,,,String if > 1 Point Exists,46,,,VEGETATION_GARDEN
+HS,,House,string,,NC,,y,2,,HS,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,STRUCTURE_SUBJECT_BUILDING
+WA,,Wall,string,,,,y,2,,WA,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,,STRUCTURE_WALL
+BG,,Building,string,,,,y,2,,BG,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,STRUCTURE_SUBJECT_BUILDING
+SH,,Shed,string,,NC,,y,2,,SH,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,STRUCTURE_SUBJECT_BUILDING
+GG,,Garage,string,,NC,,y,2,,GG,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,STRUCTURE_SUBJECT_BUILDING
+CX,,Carport,string,,,,y,2,,CX,5,,,,y,5,,y,1,,,String if > 1 Point Exists,40,,,STRUCTURE_SUBJECT_BUILDING
+FC,,Fence,string,,,,y,2,,FC,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,Texture String with tile,FENCE_FENCE
+PF,,Paling Fence,string,,,,y,2,,PF,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,,FENCE_FENCE
+MF,,Mesh Fence,string,,,,y,2,,MF,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,Texture String with tile,FENCE_FENCE
+BF,,Brick Fence,string,,,,y,2,,BF,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,Texture String with tile,STRUCTURE_WALL
+RF,,Post and Rail Fence,string,,,,y,2,,RF,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,,FENCE_FENCE
+GT,,Gate,string,,,,y,2,,GT,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,Texture String with tile,FENCE_GATE
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+RW,,Retaining Wall,"object,breakline,function",,,,y,2,,RW,5,,,,y,5,,y,1,,,String if > 1 Point Exists,42,,,STRUCTURE_WALL
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+GC,,Grade Change,"breakline,string",,,,y,2,,GC,5,,,,y,5,,y,1,,,String if > 1 Point Exists,38,,Texture String with tile,BANKS
+BK,,Bank,"breakline,string",,,,y,2,,BK,5,,,,y,5,,y,1,,,String if > 1 Point Exists,45,,,BANKS
+TB,,Top Bank,"breakline,string",,,,y,2,,TB,5,,,,y,5,,y,1,,,String if > 1 Point Exists,45,,,BANKS
+BB,,Bottom Bank,"breakline,string",,,,y,2,,BB,5,,,,y,5,,y,1,,,String if > 1 Point Exists,45,,,BANKS
+WC,,Watercourse,"breakline,string",,,,y,2,,WC,5,,,,y,5,,y,1,,,String if > 1 Point Exists,49,,,BANKS
+CK,,Creek,"breakline,string",,,,y,2,,CK,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,Texture String with tile,CREEK
+CN,,Canal,"breakline,string",,,,y,2,,CN,5,,,,y,5,,y,1,,,String if > 1 Point Exists,,,Texture String with tile,CANAL
+GU,,Gully,"breakline,string",,,,y,2,,GU,5,,,,y,5,,y,1,,,String if > 1 Point Exists,49,,,GULLY
+KB,,Kerb Square,"breakline,string,function",right angle down draw until next surface intersect,,,y,2,,KB,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_KERB_TOP
+KR,,Kerb Rolltop,"breakline,string,function",right angle down draw until next surface intersect,,,y,2,,KR,5,,,,y,5,,y,1,,,String if > 1 Point Exists,47,,,ROAD_KERB_TOP
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+CL,,Centreline,"string,function",used value to detirmin the parallel placement of string set from centerline,,,,,,,,,,,,,,,,,,,,,,
+IN,,Invert,"string,function",,,,,,,,,,,,,,,,,,,,,,,
+LC,,Line Closure,"string,function",draw line from last point to first point,,,,,,,,,,,,,,,,,,,,,,
+RC,,Rectangular Closure,"string,function",close object with parallel lines and close,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+BK,,Brick,property,just add text label to point text,,,,,,BK,5,,,,,,,,,,,,,,,
+CO,,Concrete,property,,,,,,,CO,5,,,,,,,,,,,,,,,
+FI,,Fibro,property,,,,,,,FI,5,,,,,,,,,,,,,,,
+GI,,Galvanised Iron,property,,,,,,,GI,5,,,,,,,,,,,,,,,
+GV,,Gravel,property,,,,,,,GV,5,,,,,,,,,,,,,,,
+MT,,Metal,property,,,,,,,MT,5,,,,,,,,,,,,,,,
+RK,,Rock,property,,,,,,,RK,5,,,,,,,,,,,,,,,
+SN,,Stone,property,,,,,,,SN,5,,,,,,,,,,,,,,,
+AL,,Aluminium,property,,,,,,,AL,5,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+BT,,Bottom,attribute,Lable and Function,,,,,,Bottom,,,,,,,,,,,,,,,,
+EN,,End,attribute,,,,,,,End,,,,,,,,,,,,,,,,
+TO,,Top,attribute,,,,,,,Top,,,,,,,,,,,,,,,,
+ED,,Edge,attribute,,,,,,,Edge,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,
+NC,,No Contour,function,point does not affect contour mesh,,,,,,,,,,,,,,,,,,,,,,
+NL,,No Level,function,"place point or string on ground mesh below, point doesn’t affect contour",,,,,,,,,,,,,,,,,,,,,,
+NP,,No Plot,function,don’t display and don’t affect contour,,,,,,,,,,,,,,,,,,,,,,

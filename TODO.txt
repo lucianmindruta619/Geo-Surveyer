@@ -1,0 +1,71 @@
+Architecture
+------------
+
+ * Use bower for external JS libs.
+ * Frontend should load PSU files individually and parse them directly instead of server.
+ * Convert server to node.js - running the DXF generating Python as subprocess.
+ * Make the client side load point line once instead of multiple points for each code on the line.
+
+3d Viewer
+---------
+
+ * Put circles with labels on the plot in 3d view where objects are now
+ * Develop a client-side lookup table for Autocad colours to RGB.
+ * Set stringline colour in 3d view according to doncode using client-side lookup.
+ * Set stringline thickness according to doncode in 3d view
+ * Implement Autocad line styles (dotted, dashed, etc.) in 3d view
+ * Stringline - apply correct Autocad line style in 3d view
+ * Render contour colour/thickness/style in 3d viewer
+ * Job settings - contour offset height - updates in realtime.
+
+Settings editing for XREF, contours
+-----------------------------------
+
+ DONE New tab in the UI for settings.
+ DONE Set up global settings JSON datastructure that gets loaded from the server
+ DONE Global settings - add XREF base path setting
+ DONE Set up job settings JSON datastructure with defaults loaded from the server
+ DONE Settings UI tab - global settings editable with github DavidDurman/FlexiJsonEditor
+ DONE Settings UI tab - job settings editable with github DavidDurman/FlexiJsonEditor
+ DONE Make the values in the settings dialogues editable
+ DONE If the job settings JSON does not exist, create it with defaults from settings.DEFAULT_SETTINGS_SURVEY
+
+ DONE Job settings - add contour line style, colour, layer
+ DONE Job settings - add minor-contour interval distance (mm)
+ DONE Job settings - add major-contour multiple of minor
+
+ DONE Pass job settings datastructure to DXF renderer
+ DONE Pass global settings datastructure to DXF renderer
+ * Render contour colour/thickness/style/layer from job settings datastructure in exported DXF
+ DONE Use global XREF setting to prepend to paths when exporting DXF
+
+Saving settings
+---------------
+
+ DONE Global settings JSON saved to the server and recalled globally for all jobs
+ DONE Job settings JSON saved to the server and recalled when job is loaded 
+
+Blocks
+------
+
+ DONE DXF - Put point, label, code, object into the same block
+ * DXF - Put blocks on the layer referenced in doncode
+
+Contour fillet/curve
+--------------------
+
+ DONE Experiment with DXF Polyline curve settings on contours and send results of various curve tests to Anthony
+
+Multi-day data
+--------------
+
+ DONE Aggregating/partitioning multi day data into the JSON data
+ DONE Using partitioned multi-day data in all client side viewer
+ * Using partitioned multi-day data in DXF export
+
+Scaling
+-------
+
+ DONE scaling of tree cell objects relative to original values vs values in the comment attribute of the point
+
+

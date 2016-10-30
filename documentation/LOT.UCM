@@ -1,0 +1,606 @@
+;----------------------------------- LOT UCM ----------------------------------
+;
+;UCM to plot lot and information from ascii file data.
+;
+;Microstation Version 3.0 & 4.0
+;
+;R. Casagrande 12/11/90  (A.E.R. Technical Services Pty. Ltd. 625-5014)
+;
+;Modified 22/05/92
+;-------------------------------------------------------------- Version 1.3 ---
+;Modified 11/11/94--- KJD
+;Changed text sizes to suit Mirvac
+;
+;-------------------------------------------------------------- Version 1.4 ---
+;Modified 3/2/95--- KJD
+;Changed lot boundary to suit Jennings (wt=3)
+;
+;-------------------------------------------------------------- Version 1.5 ---
+;Modified 17.8.95---- KD
+;Reversed Mirvac changes
+;Changed views and level settings at end
+;-------------------------------------------------------------- Version 1.6 ---
+;Modified 14.3.96,28.3.96 ---- KD
+;Changes to weights and sizes of some text+weight of easement
+;-------------------------------------------------------------- Version 1.7 ---
+;Modified 8.3.10 ---- GT
+;Changes to colours of some text
+;-------------------------------------------------------------- Version 1.8 ---
+
+        TST NDICES NE 2,THREE
+ 	KEY 'NOECHO'
+
+        MSG 'STLOT file plotting utility     (Ver 1.7)'
+
+FILE:   MSG 'PREnter File  (Reset to Exit)'
+        MSG 'ER'
+        GET K,CHKFIL,P,FILE,R,EXIT
+
+CHKFIL: TST KEY EQ '',FILE
+        SET C0='G:\DUMP\'+KEY
+        SET MSG='CFFile='
+        SET MSG=MSG+C0
+        MSG MSG
+
+ACCEPT: MSG 'ERData/Return to Continue (Reset to Exit)'
+        GET K,INCLUDE,P,INCLUDE,R,EXIT
+
+INCLUDE:MSG 'PR'
+        MSG 'ER'
+
+        SET R20=DFSECT                           ; Start of text file
+        SET R21=DFBYTE
+
+        MSG 'CFSetting View(s)....'
+        KEY 'VIEW ON'
+        PNT ,,,1
+        PNT ,,,5
+        KEY 'VIEW OFF'
+        PNT ,,,2
+        PNT ,,,3
+        PNT ,,,4
+        PNT ,,,6
+        PNT ,,,7
+        PNT ,,,8
+
+        KEY 'VI=TOP'                             ; Set top view (1 & 5)
+        PNT ,,,1
+        PNT ,,,5
+        KEY 'SET TEXT OFF'                       ; Set fast text on (1 & 5)
+        PNT ,,,1
+        PNT ,,,5
+        CMD UPDAT1
+        CMD UPDAT2
+
+        SET TPSMDE=0                             ; Set conventional mode
+
+        KEY 'LV=60'                              ; Temporary text level
+        KEY 'FT=28'
+        KEY 'TX=1'
+        KEY 'AA=0'
+        CMD TXJS1
+        MSG 'CFReading File....'
+        SET KEY='INCLUDE '+C0                    ; Include text file
+        SET KEY=KEY+'.LOT'                       ; Try with default (.LOT)
+        KEY 
+        PNT 0,0,0,1
+        TST RELERR NE 0,EXITUC
+        SET R30=DFSECT                           ; End of text file
+        SET R31=DFBYTE
+        SET R0=R20
+        SET R1=R21
+        TST R0 NE R30,SET
+        TST R1 NE R31,SET
+
+        SET KEY='INCLUDE '+C0                    ; Try without default
+        KEY 
+        PNT 0,0,0,1
+        SET R30=DFSECT
+        SET R31=DFBYTE
+        TST R0 NE R30,SET
+        TST R1 NE R31,SET
+
+        MSG 'CF** File not found **'
+        GO  FILE
+
+SET:    MSG 'CFPlotting Data....'
+        SET R29=1
+
+NEXT:   TST R0 LT R30,OK                         ; Test for end of text file
+        TST R1 LT R31,OK
+        RST                                      ; Reset for last linestring
+        GO  EXIT
+
+OK:     RED R0,R1
+        SET R29=R29+1
+        SET R3=R0
+        SET R4=R1
+	SET R0=ELEBLK
+	SET R1=ELECNT
+        TST UELETY EQ 7,TXNODE
+        TST UELETY NE 17,NEXT
+
+        SET R10=0
+        SET C0=''
+
+ASC:    SET R10=R10+1
+        TST R10 GT TX.NCH,ENDCDE
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ';',NEXT               ; Disregard line if ;
+        SET C0=C0+UCASC(R10)
+
+        TST R10 EQ 2,CODE
+        TST R10 EQ 4,NUMBER
+        GO  ASC
+
+CODE:   SET C1=C0
+        SET C0=''
+        TST R11 EQ 1,LSCHK
+        GO  ASC
+
+NUMBER: SET C2=C0
+        SET C0=''
+
+ENDCDE: TST C1 EQ 'TX',TX
+        TST C1 EQ 'LS',LS
+        TST C1 EQ 'PT',PT
+        GO  NEXT
+
+;--------------------------------- TEXT CODES ---------------------------------
+
+TX:     CMD NULCMD
+        TST C2 EQ '01',TX01                      ; Text types
+        TST C2 EQ '02',TX02
+        TST C2 EQ '03',TX03
+        TST C2 EQ '04',TX04
+        TST C2 EQ '05',TX05
+        TST C2 EQ '06',TX06
+        TST C2 EQ '07',TX07
+        TST C2 EQ '08',TX08
+        TST C2 EQ '09',TX09
+	TST C2 EQ '16',TX16
+        GO  TXXX                                 ; Unknown type
+
+TX01:   KEY 'LV=29'                              ; Lot Number
+        KEY 'CO=6'
+        KEY 'WT=3'
+        KEY 'FT=1'
+        KEY 'TX=1.3'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+TX09:   KEY 'LV=28'                              ; Area
+        KEY 'CO=6'
+        KEY 'WT=1'
+        KEY 'FT=1'
+        KEY 'TX=0.8'
+        KEY 'AA=0'
+        GO  PLTXT
+
+TX02:   KEY 'LV=24'                              ; Easement symbol
+        KEY 'CO=6'
+        KEY 'WT=2'
+        KEY 'FT=1'
+        KEY 'TX=0.8'
+        KEY 'AA=0'
+        GO  PLTXT
+
+TX03:   KEY 'LV=25'                              ; Street Name
+        KEY 'CO=6'
+        KEY 'WT=3'
+        KEY 'FT=1'
+        KEY 'TX=1.3'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+TX04:   KEY 'LV=31'                              ; Bearing
+        KEY 'CO=6'
+        KEY 'WT=1'
+        KEY 'FT=4'
+        KEY 'TX=0.6'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+TX05:   KEY 'LV=19'                              ; Easement Description, North
+        KEY 'CO=6'
+        KEY 'WT=1'
+        KEY 'FT=1'
+        KEY 'TX=0.6'
+        KEY 'AA=0'
+        CMD TXJS2
+        GO  PLTXT
+
+TX06:   KEY 'LV=23'                              ; Offset Distance
+        KEY 'CO=4'
+        KEY 'WT=1'
+        KEY 'FT=1'
+        KEY 'TX=0.5'
+        KEY 'AA=0'
+        CMD TXJS8
+        GO  PLTXT
+
+TX07:   KEY 'LV=27'                              ; Boundary Distance
+        KEY 'CO=6'
+        KEY 'WT=2'
+        KEY 'FT=4'
+        KEY 'TX=0.7'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+TX08:   KEY 'LV=22'                              ; House Description
+        KEY 'CO=4'
+        KEY 'WT=1'
+        KEY 'FT=1'
+        KEY 'TX=0.5'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+TX16:   KEY 'LV=23'                              ; Peg Offset
+        KEY 'CO=0'
+        KEY 'WT=1'
+        KEY 'FT=1'
+        KEY 'TX=0.5'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+TXXX:   KEY 'LV=31'                              ; Unknown
+        KEY 'CO=0'
+        KEY 'WT=1'
+        KEY 'LC=0'
+        KEY 'TX=0.5'
+        KEY 'AA=0'
+        CMD TXJS7
+        GO  PLTXT
+
+PLTXT:  SET C11=''
+        SET C12=''
+        SET C13=''
+        SET C14=''
+
+TX1:    TST R10 GT TX.NCH,ENDTX
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',TX2
+        TST R10 GT TX.NCH,TX2
+        SET C11=C11+UCASC(R10)                   ; Angle
+        GO  TX1
+
+TX2:    TST R10 GT TX.NCH,ENDTX
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',TX3
+        TST R10 GT TX.NCH,TX3
+        SET C12=C12+UCASC(R10)                   ; Easting
+        GO  TX2
+
+TX3:    TST R10 GT TX.NCH,ENDTX
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',TX4
+        TST R10 GT TX.NCH,TX4
+        SET C13=C13+UCASC(R10)                   ; Northing
+        GO  TX3
+
+TX4:    TST R10 GT TX.NCH,ENDTX
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST R10 GT TX.NCH,ENDTX
+        SET C14=C14+UCASC(R10)                   ; Text
+        GO  TX4
+
+ENDTX:  TST C11 EQ '',NEXT
+        SET KEY='AA='+C11
+        KEY
+        SET A1=C12*1000
+        SET A2=C13*1000
+        SET A1=A1+GOXUOR                         ; Adjust for Global Origin
+        SET A2=A2+GOYUOR
+
+        TST A1 GT 2147483500,FILERR              ; Test if point is on plane
+        TST A1 LT -2147483500,FILERR
+        TST A2 GT 2147483500,FILERR
+        TST A2 LT -2147483500,FILERR
+
+        CMD PTEXT
+        KEY C14
+        PNT A1,A2,,1
+        GO  NEXT
+
+;------------------------------ LINESTRING CODES ------------------------------
+
+LS:     CMD NULCMD
+        TST C2 EQ '01',LS01                      ; Linestring types
+        TST C2 EQ '02',LS02
+        TST C2 EQ '03',LS03
+        TST C2 EQ '04',LS04
+        TST C2 EQ '05',LS05
+	TST C2 EQ '06',LS06
+        GO  LSXX                                 ; Unknown type
+
+LS01:   KEY 'LV=30'                              ; Boundary
+        KEY 'CO=6'
+        KEY 'WT=3'
+        KEY 'LC=0'
+        GO  PLSTR
+
+LS02:   KEY 'LV=30'                              ; Easement
+        KEY 'CO=6'
+        KEY 'WT=2'
+        KEY 'LC=3'
+        GO  PLSTR
+
+LS03:   KEY 'LV=20'                              ; House
+        KEY 'CO=4'
+        KEY 'WT=2'
+        KEY 'LC=0'
+        GO  PLSTR
+
+LS04:   KEY 'LV=20'                              ; House ver etc
+        KEY 'CO=4'
+        KEY 'WT=1'
+        KEY 'LC=0'
+        GO  PLSTR
+
+LS05:   KEY 'LV=21'                              ; Offset
+        KEY 'CO=4'
+        KEY 'WT=1'
+        KEY 'LC=2'
+        GO  PLSTR
+
+LS06:   KEY 'LV=21'                              ; Peg Offset
+        KEY 'CO=0'
+        KEY 'WT=1'
+        KEY 'LC=2'
+        GO  PLSTR
+
+LSXX:   KEY 'LV=30'                              ; Unknown
+        KEY 'CO=4'
+        KEY 'WT=1'
+        KEY 'LC=0'
+        GO  PLSTR
+
+PLSTR:  CMD PPTLST
+        SET C11=''
+        SET C12=''
+
+LS1:    RED R3,R4
+        TST R10 GT TX.NCH,ENDSTR
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',LS2
+        TST R10 GT TX.NCH,LS2
+        SET C11=C11+UCASC(R10)                   ; Easting
+        GO  LS1
+
+LS2:    TST R10 GT TX.NCH,ENDSTR
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',PLT
+        TST R10 GT TX.NCH,PLT
+        SET C12=C12+UCASC(R10)                   ; Northing
+        GO  LS2
+
+PLT:    SET A1=C11*1000
+        SET A2=C12*1000
+        SET A1=A1+GOXUOR                         ; Adjust for Global Origin
+        SET A2=A2+GOYUOR
+
+        TST A1 GT 2147483500,FILERR              ; Test if point is on plane
+        TST A1 LT -2147483500,FILERR
+        TST A2 GT 2147483500,FILERR
+        TST A2 LT -2147483500,FILERR
+
+        PNT A1,A2,,1 
+        SET C11=''
+        SET C12=''
+        GO  LS1
+
+ENDSTR: SET R11=1
+        GO  NEXT
+
+LSCHK:  SET R11=0
+        SET R10=0
+        TST C1 EQ 'LS',LSRST                     ; Test if new code
+        TST C1 EQ 'TX',LSRST
+        TST C1 EQ 'PT',LSRST
+        GO  LS1                                  ; If not continue with co-ords
+
+LSRST:  RST                                      ; If new code end linestring
+        SET C0=''
+        RED R3,R4
+        GO  ASC
+
+;--------------------------------- POINT CODES ---------------------------------
+
+PT:     SET C11=''
+        SET C12=''
+        SET C13=''
+        SET C14=''
+
+PT1:    TST R10 GT TX.NCH,ENDPT
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',PT2
+        TST R10 GT TX.NCH,PT2
+        SET C11=C11+UCASC(R10)                   ; Easting
+        GO  PT1
+
+PT2:    TST R10 GT TX.NCH,ENDPT
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',PT3
+        TST R10 GT TX.NCH,PT3
+        SET C12=C12+UCASC(R10)                   ; Northing
+        GO  PT2
+
+PT3:    TST R10 GT TX.NCH,ENDPT
+        SET R10=R10+1
+        SET UCBYT(R10)=TX.LET(R10)
+        TST UCASC(R10) EQ ' ',ENDPT
+        TST R10 GT TX.NCH,ENDPT
+        SET C13=C13+UCASC(R10)                   ; Text
+        GO  PT3
+
+ENDPT:  TST C11 EQ '',NEXT
+        SET A1=C11*1000
+        SET A2=C12*1000
+        SET A1=A1+GOXUOR                         ; Adjust for Global Origin
+        SET A2=A2+GOYUOR
+
+        TST A1 GT 2147483500,FILERR              ; Test if point is on plane
+        TST A1 LT -2147483500,FILERR
+        TST A2 GT 2147483500,FILERR
+        TST A2 LT -2147483500,FILERR
+
+        CMD NULCMD
+        TST C2 EQ '01',PT01                      ; Point types
+        TST C2 EQ '02',PT02
+        TST C2 EQ '03',PT03
+        GO  NEXT
+
+PT01:   KEY 'LV=33'                              ; Kevin's Code
+        KEY 'CO=0'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'FT=1'
+        KEY 'TX=0.75'
+        KEY 'AA=45'
+
+        CMD PCIRR
+        KEY '0.3'
+        PNT A1,A2,,1
+        CMD TXJS1
+        CMD PTEXT
+        SET KEY='  '+C13
+        KEY
+        PNT A1,A2,,1
+        GO  NEXT
+
+PT02:   KEY 'LV=34'                              ; Survey Mark 1
+        KEY 'CO=0'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'FT=1'
+        KEY 'TX=0.75'
+        KEY 'AA=45'
+
+        CMD PCIRR
+        KEY '0.3'
+        PNT A1,A2,,1
+        RST
+        KEY '0.6'
+        PNT A1,A2,,1
+        CMD TXJS2
+        CMD PTEXT
+        SET KEY='  '+C13
+        KEY
+        PNT A1,A2,,1
+        GO  NEXT
+
+PT03:   KEY 'LV=35'                              ; Survey Mark 2
+        KEY 'CO=0'
+        KEY 'WT=0'
+        KEY 'LC=0'
+        KEY 'FT=1'
+        KEY 'TX=0.75'
+        KEY 'AA=45'
+
+        CMD PCIRR
+        KEY '0.3'
+        PNT A1,A2,,1
+        CMD PBLOCK
+        SET A3=A1-500
+        SET A4=A2-500
+        PNT A3,A4
+        SET A3=A1+500
+        SET A4=A2+500
+        PNT A3,A4
+        CMD TXJS2
+        CMD PTEXT
+        SET KEY='  '+C13
+        KEY
+        PNT A1,A2,,1
+        GO  NEXT
+
+THREE:  MSG 'ERUse in 2D file only'
+        GO  END
+
+TXNODE: MSG 'ERERROR: Add dot to start of text file'
+        CMD DLELEM
+	SET WWSECT=CUREBL
+	SET WWBYTE=CUREBY
+        PNT 0,0,0,1 
+        PNT 0,0,0,1 
+        GO  RSET
+
+FILERR: MSG 'PRCheck if AMG or ISG seed file required'
+        MSG 'ERERROR: Co-ordinates off design plane' 
+        GO  EXIT
+
+EXITUC: SET MSG='ERFATAL ERROR: Line '+R29
+        MSG MSG
+        SET ERR=0
+
+EXIT:   SET R0=R20
+        SET R1=R21
+
+DEL:    TST R0 LT R30,ERASE                      ; Test for end text file
+        TST R1 LT R31,ERASE
+        GO  RSET
+
+ERASE:  RED R0,R1
+	SET R0=ELEBLK
+	SET R1=ELECNT
+
+        SET DGNBUF(1)=DGNBUF(1) ! 32768          ; Delete text
+        WRT CUREBL,CUREBY
+        GO  DEL
+
+RSET:   CMD NULCMD
+        MSG 'CFCompressing File....'
+        KEY 'COMPRESS DESIGN'
+        MSG 'CFUpdating View(s)....'
+        KEY 'AA=0'
+        KEY 'AS=1'
+
+        KEY 'SET TEXT ON'                        ; Set fast text off
+        PNT ,,,1
+        PNT ,,,5
+
+        SET TPSMDE=1                             ; Set azimuth mode
+
+        ;KD
+        ;KEY 'OF=3,4,5,6,38'                      ; No display levels
+        ;PNT ,,,1
+        CMD FIT1
+        PNT ,,,1
+        CMD FIT2
+        PNT ,,,5
+        CMD FILDGN
+
+        ;this added by KD to reverse turning them of at the beginning
+        KEY 'VIEW ON'
+        PNT ,,,2
+        PNT ,,,3
+        PNT ,,,4
+        PNT ,,,6
+        PNT ,,,7
+        PNT ,,,8
+
+
+
+	SET WWSECT=4
+	SET WWBYTE=0
+
+        CMD NULCMD
+	KEY 'ECHO'
+        MSG 'PRPlotting completed'
+        MSG 'CF'
+END:    MSG 'ST'
+	END
